@@ -1,10 +1,13 @@
 import { Schema, model } from "mongoose";
 
 const petModel = new Schema({
+    petID: String,
     breedType: String,
     name: String,
     animalType: String,
     feature: String,
+    userID: { type: String, ref: "users", default: null }, // User who adopts the pet
+    isAdopted: { type: Boolean, default: false }
 });
 
 const pets = model("pets", petModel);
@@ -19,16 +22,14 @@ export async function findAll() {
     return await pets.find()
 } 
 
-export async function get(breed) {
+export async function get(petID) {
     const data = await pets.findOne({
-        breed: { $eq: breed }
+        petID: { $eq: petID }
     })
     if (!data) return null
     return data;
 }
 
-export async function update(name, data) {
-    const pet = await get(name);
-    if(!pet) return null;
-    return await pets.updateOne({ name: { $eq: name } }, data);
+export async function update(id, data) {
+    return await pets.updateOne({ petID: id }, data);
 }
