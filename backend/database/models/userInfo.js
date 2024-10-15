@@ -2,7 +2,8 @@ import { Schema, model } from "mongoose";
 
 const userModel = new Schema({
     userID: String,
-    petPreference: String
+    petPreference: String,
+    pets: [{ type: String, ref: "pets" }]
 });
 
 const users = model("users", userModel);
@@ -20,4 +21,13 @@ export async function getUserByID(userID) {
     })
     if (!data) return null
     return data;
+}
+
+export async function addPetToUser(userID, petID) {
+    const user = await getUserByID(userID);
+    if (!user)
+        throw new Error("User not found");
+
+    user.pets.push(petID);
+    await user.save();
 }
