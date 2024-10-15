@@ -16,8 +16,8 @@ export const completeOnboarding = async (formData: FormData) => {
     const user = clerkClient().users;
     await user.updateUserMetadata(userId, {
       publicMetadata: {
-        onboardingComplete: false,
-        // onboardingAIOutput: result
+        onboardingComplete: true,
+        onboardingAIOutput: result
       },
     });
   } catch (error) {

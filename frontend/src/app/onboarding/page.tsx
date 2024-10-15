@@ -201,7 +201,7 @@ export default function OnboardingComponent() {
           })}
       </div>
       <div className="bg-slate-500 w-full flex items-center justify-end fixed bottom-0">
-      {message && <p className="text-white">{message}</p>}
+      {message && <p className="text-white font-poppins text-sm text-center">{message}</p>}
         <div className="flex gap-2 p-3">
           {current.actions.map((action, i) => (
             <button
@@ -218,15 +218,3 @@ export default function OnboardingComponent() {
     </div>
   );
 }
-
-/**
- * 
- *      {current.component({
-            currentItem: current,
-            formData,
-            handleFormData: (data) => handleFormData(current.id, data),
-            nextData: { id: next.id, data: formData[next.id] },
-            previousData: { id: prev.id, data: formData[next.id] },
-            data: formData[current.id]
-          })}
- */
