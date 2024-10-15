@@ -4,20 +4,17 @@ import React from "react";
 const cards = [
   {
     title: "Adopt",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem enim leo.",
+    description: "Find your perfect furry friend through our adoption program. Give a pet a forever home and experience the unconditional love they bring",
     image: "/about/chat.svg",
   },
   {
     title: "Community",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem enim leo.",
+    description: "Become a part of our vibrant community. Connect with fellow pet lovers, share experiences, and support each other.",
     image: "/about/chat.svg",
   },
   {
     title: "AI",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem enim leo.",
+    description: "Explore our AI-driven tools designed to enhance your pet care experience. Get personalized recommendations and insights.",
     image: "/about/chat.svg",
   },
 ];
@@ -32,7 +29,7 @@ export default function About() {
         <h1 className="text-4xl md:text-5xl font-bold font-poppins dark:text-white  text-primary leading-tight">
           What is Petpals?
         </h1>
-        <p className="text-darkMaroon text-lg font-poppins items-center dark:text-white  pt-10 ">
+        <p className="text-darkMaroon text-lg font-poppins dark:text-white  pt-10 text-wrap ">
           PetPals aims to be the leading platform that transforms the pet
           adoption experience by seamlessly integrating a social network for pet
           enthusiasts. Our vision is to create a community where pet lovers can
@@ -49,7 +46,7 @@ export default function About() {
           {cards.map((card, index) => (
             <div
               key={index}
-              className="flex rounded-xl flex-col p-8 bg-gradient-to-b from-lightBeige to-darkMaroon gap-3 justify-center  w-72"
+              className="flex  rounded-xl flex-col p-8 bg-gradient-to-b from-lightBeige to-darkMaroon gap-3 justify-center  w-72 h-96"
             >
               <Image
                 alt={card.title}
