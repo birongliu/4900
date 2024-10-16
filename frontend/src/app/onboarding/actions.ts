@@ -1,37 +1,35 @@
 "use server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { getDataFromFormData } from "../utils/functions";
-import { OnboardingResultOptions, ProgressItemProps } from "../utils/interface";
+import { FormData, OnboardingResultOptions } from "../utils/interface";
 
 export const completeOnboarding = async (formData: FormData) => {
   const { userId } = auth();
-
-  if (!userId) {
-    return { message: "No Logged In User" };
-  }
-  const data = getDataFromFormData(formData);
-  const dataFromAI = await fetchAIOnboardingResult(data);
-  if(!dataFromAI) return { message: "Error Fetching AI Data" };
+  if (!userId) return { message: "User not found" };
+  const result = await fetchAIOnboardingResult({
+    Experience: formData.Experience,
+    PetSize: formData.PetSize,
+    AnimalType: formData.AnimalType,
+    BreedType: formData.BreedType,
+    Qualities: formData.Qualities,
+  })
   try {
-    const clerk = clerkClient();
-    await clerk.users.updateUser(userId, {
+    const user = clerkClient().users;
+    await user.updateUserMetadata(userId, {
       publicMetadata: {
         onboardingComplete: true,
-        onboardingAIOutput: dataFromAI,
+        onboardingAIOutput: result
       },
     });
-    console.log("User metadata Updated");
-
-    return { message: "User metadata Updated" };
-  } catch (e) {
-    console.log("error", e);
-    return { message: "Error Updating User Metadata" };
+  } catch (error) {
+    console.error(error);
+    return { message: "Error" };
   }
 };
 
 async function fetchAIOnboardingResult(
-  formData: OnboardingResultOptions[]
+  formData: Omit<FormData, "Result" | "Introduction">
 ) {
+  console.log(JSON.stringify(formData));
   const data = await fetch(
     `${process.env.NEXT_PUBLIC_CLIENT_URL}/api/onboarding`,
     {

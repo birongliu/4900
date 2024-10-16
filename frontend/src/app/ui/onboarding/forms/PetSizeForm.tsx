@@ -8,7 +8,7 @@ const options: { url: string; name: "Small" | "Medium" | "Large" }[] = [
   { url:  "./onboarding/large.svg", name: "Large" },
 ];
 export default function PetSizeForm({
-  progressItem,
+  currentItem,
   handleFormData,
   data,
 }: OnboardingComponentProps) {
@@ -21,11 +21,11 @@ export default function PetSizeForm({
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full p-2">
       <h1 className="text-2xl font-bold font-poppins text-center py-2">
-        {progressItem.question}
+        {currentItem.question}
       </h1>
-      <ul className="grid lg:grid-cols-3 gap-5 py-10">
+      <ul className="grid grid-cols-2 gap-2">
         {options.map((item) => (
           <li
             key={item.name}
@@ -34,7 +34,7 @@ export default function PetSizeForm({
             className={`border flex justify-center p-2 rounded-xl  ${selected === item.name ? "bg-slate-500" : "bg-inherit"}`}
           >
             <div id={item.name}  className="flex py-5 flex-col justify-center items-center"> 
-            <Image src={item.url} alt={`${item.name} pet selection`} width={200} height={200} />
+            <Image className="w-full h-full" src={item.url} alt={`${item.name} pet selection`} width={200} height={200} />
             <h1 className="font-bold text-3xl">{item.name}</h1>
             </div>
           </li>

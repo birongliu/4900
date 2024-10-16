@@ -4,7 +4,7 @@ import React from "react";
 const level = ["Dog", "Cat"];
 
 export default function PetTypeForm({
-  progressItem,
+  currentItem,
   handleFormData,
   data,
 }: OnboardingComponentProps) {
@@ -19,7 +19,7 @@ export default function PetTypeForm({
     <div className="w-full py-5">
     <div className="py-2">
       <h1 className="text-2xl font-bold font-poppins text-center py-2">
-        {progressItem.question}
+        {currentItem.question}
       </h1>
     </div>
     <ul className="grid md:grid-cols-2 grid-cols-1 gap-3 py-5">

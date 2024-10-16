@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'max-age=3600',
     },
     body: JSON.stringify({ message: JSON.stringify(ctx) }),
   })

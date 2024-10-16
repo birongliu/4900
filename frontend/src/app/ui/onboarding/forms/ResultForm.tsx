@@ -1,28 +1,27 @@
-import { getDataFromFormData } from "@/app/utils/functions";
 import { OnboardingComponentProps } from "@/app/utils/interface";
 import React from "react";
 
 export default function ResultForm({
   formData,
-  progressItem,
+  currentItem,
 }: OnboardingComponentProps) {
-  const data = getDataFromFormData(formData);
+  const data = Object.entries(formData).filter(k => k[0] !== "Result" && k[0] !== "Introduction");
   return (
     <div className="w-full py-5">
       <div className="py-2">
         <h1 className="text-2xl font-bold font-poppins text-center py-2">
-          {progressItem.question}
+          {currentItem.question}
         </h1>
       </div>
       <div className="grid grid-cols-2  gap-3 py-5">
-        {data.map((item, index) => (
+        {data.map(([key, value], index) => (
           <div
-            className={`border p-2 last:grid-rows-1 cursor-pointer ${
+            className={`border p-2  cursor-pointer ${
               index === data.length - 1 ? "col-span-2" : ""
             }`}
-            key={item.key}
+            key={key}
           >
-            {item.key}: {item.value}
+            {key}: {value}
           </div>
         ))}
       </div>

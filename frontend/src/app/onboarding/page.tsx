@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import PanelProgressBar from "@/app/ui/onboarding/PanelProgressBar";
 import Shape from "@/app/ui/shared/Shape";
 import { ExperienceForm, PetSizeForm } from "@/app/ui/onboarding/forms";
-import { ActionType, ProgressItemProps } from "@/app/utils/interface";
+import { ActionType, FormData, ProgressItemProps } from "@/app/utils/interface";
 import { completeOnboarding } from "./actions";
 import IntroductionForm from "@/app/ui/onboarding/forms/IntroductionForm";
 import QualitiesForm from "../ui/onboarding/forms/QualitiesForm";
@@ -15,22 +15,22 @@ import ResultForm from "../ui/onboarding/forms/ResultForm";
 
 const progressItems: ProgressItemProps[] = [
   {
-    id: "onboarding - Instruction",
+    id: "Introduction",
     question: "Application Name",
     status: "incomplete",
-    actions: [ActionType.START],
+    actions: ["next"],
     completedColor: {
       from: "from-[rgb(227,205,10)]",
       to: "to-[rgb(227,205,160)]",
     },
-  
+
     component: (options) => <IntroductionForm {...options} />,
   },
   {
     id: "Experience",
     question: "What is your experience level with pets?",
     status: "incomplete",
-    actions: [ActionType.PREVIOUS, ActionType.NEXT],
+    actions: ["previous", "next"],
     completedColor: {
       from: "from-[rgb(227,205,173)]",
       to: "to-[rgb(227,205,173)]",
@@ -39,7 +39,7 @@ const progressItems: ProgressItemProps[] = [
   },
   {
     id: "PetSize",
-    actions: [ActionType.PREVIOUS, ActionType.NEXT],
+    actions: ["previous", "next"],
     question: "What size pet are you considering?",
     status: "incomplete",
     completedColor: {
@@ -52,7 +52,7 @@ const progressItems: ProgressItemProps[] = [
     id: "AnimalType",
     question: "What type of pet are you interested in adopting?",
     status: "incomplete",
-    actions: [ActionType.PREVIOUS, ActionType.NEXT],
+    actions: ["previous", "next"],
     completedColor: {
       from: "from-[rgb(167,137,123)]",
       to: "to-[rgb(167,137,123)]",
@@ -63,7 +63,7 @@ const progressItems: ProgressItemProps[] = [
     id: "BreedType",
     question: "What breed(s) do you prefer?",
     status: "incomplete",
-    actions: [ActionType.PREVIOUS, ActionType.NEXT],
+    actions: ["previous", "next"],
     completedColor: {
       from: "from-[rgb(167,137,123)]",
       to: "to-[rgb(96,56,64)]",
@@ -72,7 +72,7 @@ const progressItems: ProgressItemProps[] = [
   },
   {
     id: "Qualities",
-    actions: [ActionType.PREVIOUS, ActionType.NEXT],
+    actions: ["previous", "next"],
     question: "What qualities are you looking for in a pet?",
     completedColor: {
       from: "from-[rgb(96,56,64)]",
@@ -82,8 +82,8 @@ const progressItems: ProgressItemProps[] = [
     component: (options) => <QualitiesForm {...options} />,
   },
   {
-    id: "review",
-    actions: [ActionType.PREVIOUS, ActionType.SUBMIT],
+    id: "Result",
+    actions: ["previous", "submit"],
     question: "Review",
     completedColor: {
       from: "from-[rgb(227,205,173)]",
@@ -98,17 +98,23 @@ export default function OnboardingComponent() {
   const { user } = useUser();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [progressItem, setProgressItem] =
-    useState<ProgressItemProps[]>(progressItems);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState(new FormData());
+  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState<FormData>({
+    Experience: "",
+    PetSize: "",
+    Introduction: "",
+    Result: "",
+    AnimalType: "",
+    BreedType: "",
+    Qualities: "",
+  });
 
   const handleFormSubmit = async (formData: FormData) => {
     setLoading(true);
-    const { message } = await completeOnboarding(formData);
+    await completeOnboarding(formData);
     if (user) await user.reload();
     setLoading(false);
-    console.log(message);
     console.log("User Onboarding Completed");
     router.push("/dashboard");
   };
@@ -119,30 +125,30 @@ export default function OnboardingComponent() {
 
   function handleNext(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
+    const current = getProgressItem(progressItems, currentStep);
+    if(current.id !== "Introduction" && !formData[current.id]) {
+     setMessage("Please fill out the form before proceeding");
+     return;
+    };
+    const next = getProgressItem(progressItems, currentStep + 1);
     setCurrentStep((prev) => prev + 1);
-    const current = getProgressItem(progressItem, currentStep);
-    const next = getProgressItem(progressItem, currentStep + 1);
     current.status = "completed";
     next.status = "current";
-    setProgressItem(progressItem);
   }
 
   function handleBack(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    if (currentStep - 1 < 0) return;
-    const current = getProgressItem(progressItem, currentStep);
-    const prev = getProgressItem(progressItem, currentStep - 1);
+    if(message) setMessage("");
+    const current = getProgressItem(progressItems, currentStep);
+    const prev = getProgressItem(progressItems, currentStep - 1);
     setCurrentStep((prev) => prev - 1);
     current.status = "incomplete";
     prev.status = "current";
-    setProgressItem(progressItem);
   }
 
-  function handleFormData(key: string, value: string) {
-    setFormData((prev) => {
-      prev.set(key, value);
-      return prev;
-    });
+  function handleFormData(key: string, value: string | string[]) {
+    setMessage("");
+    setFormData((prev) => ({ ...prev, [key]: value }));
   }
 
   const actions: Record<
@@ -151,12 +157,14 @@ export default function OnboardingComponent() {
   > = {
     next: handleNext,
     previous: handleBack,
-    start: handleNext,
     submit: handleSubmit,
   };
 
-  function getProgressItem<T>(items: T[], currentPosition: number) {
-    const position = getPosition(currentPosition);
+  function getProgressItem<T extends ProgressItemProps>(
+    items: T[],
+    currentPosition: number
+  ) {
+    const position = getPosition(items, currentPosition);
     if (position < 0) {
       return items[0];
     }
@@ -168,44 +176,43 @@ export default function OnboardingComponent() {
     return items[position];
   }
 
-  const getPosition = (currentStep: number) => {
-    return Math.min(progressItem.length - 1, currentStep);
+  function getPosition<T extends any[]>(item: T, currentStep: number) {
+    return Math.min(item.length - 1, currentStep);
   }
 
-  const prev = getProgressItem(progressItem, currentStep - 1);
-  const current = getProgressItem(progressItem, currentStep);
-  const next = getProgressItem(progressItem, currentStep + 1);
-
+  const prev = getProgressItem(progressItems, currentStep - 1);
+  const current = getProgressItem(progressItems, currentStep);
+  const next = getProgressItem(progressItems, currentStep + 1);
+  current.status = "current";
 
   return (
-    <div className=" px-10 py-5 mt-5">
+    <div className="mb-20">
       <Shape className="-top-24 -left-12" />
-      <div className="relative bg-pureWhite rounded-xl py-10 px-10 ">
-        <PanelProgressBar progressItems={progressItem} />
-        <div className="text-darkMaroon w-full">
-          {current.component({
-            progressItem: current,
+      <Shape className="right-0 -top-24 w-32 overflow-hidden" />
+      <div className="bg-slate-400 mx-2 md:mx-12 rounded-xl p-5 h-full">
+      <PanelProgressBar progressItems={progressItems} />
+      {current.component({
+            currentItem: current,
             formData,
-            handleFormData: (data) => {
-              handleFormData(current.id, data);
-              return data;
-            },
-            nextData: { id: "next", data: formData.get(next.id) as string },
-            previousData: { id: "previous", data: formData.get(prev.id) as string },
-            data: formData.get(current.id) as string,
+            handleFormData: (data) => handleFormData(current.id, data),
+            nextData: { id: next.id, data: formData[next.id] },
+            previousData: { id: prev.id, data: formData[prev.id] },
+            data: formData[current.id]
           })}
-          <div className="w-full flex justify-center items-center gap-2">
-            {current.actions.map((action) => (
-              <button
-                disabled={ActionType.SUBMIT === action && loading}
-                onClick={(e) => actions[action](e)}
-                className={`w-full uppercase bg-darkMaroon rounded-xl text-white p-2`}
-                key={action}
-              >
-                {ActionType.SUBMIT === action && loading ? "Loading" : action}
-              </button>
-            ))}
-          </div>
+      </div>
+      <div className="bg-slate-500 w-full flex items-center justify-end fixed bottom-0">
+      {message && <p className="text-white font-poppins text-sm text-center">{message}</p>}
+        <div className="flex gap-2 p-3">
+          {current.actions.map((action, i) => (
+            <button
+              disabled={action === "submit" && loading}
+              onClick={actions[action].bind(formData[current.id])}
+              className={`w-full uppercase bg-darkMaroon rounded-lg text-white p-2`}
+              key={action}
+            >
+              {i === 0 && action === "next" ? "Start": action}
+            </button>
+          ))}
         </div>
       </div>
     </div>
