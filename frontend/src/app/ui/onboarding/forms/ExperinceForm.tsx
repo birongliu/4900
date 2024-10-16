@@ -4,7 +4,7 @@ import React from "react";
 const level = ["Beginner", "Intermediate", "Experienced"];
 
 export default function ExperinceForm({ currentItem, handleFormData, data }: OnboardingComponentProps) {
-  const [selected, setSelected] = React.useState<string[] | string | null>(data);
+  const [selected, setSelected] = React.useState<string | string[]>(data);
 
   const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     e.preventDefault()
