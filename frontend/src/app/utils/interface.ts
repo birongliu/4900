@@ -3,16 +3,20 @@ export interface PanelProgressBarProps {
   className?: string;
 }
 
-export enum ActionType {
-  SUBMIT = "submit",
-  NEXT = "next",
-  PREVIOUS = "previous",
-  START = "start"
-}
+const ActionTypes = Object.freeze({
+  SUBMIT: "submit",
+  NEXT: "next",
+  PREVIOUS: "previous",
+})
+
+type ActionTypeKeys = keyof typeof ActionTypes;
+export type ActionType = typeof ActionTypes[ActionTypeKeys];
+
+type PropId = "Introduction" | "Experience" | "Qualities" |"PetSize" | "AnimalType" | "BreedType" | "Result";
 
 export interface ProgressItemProps {
   question: string;
-  id: string,
+  id: PropId,
 
   actions: ActionType[],
   completedColor: {
@@ -24,14 +28,17 @@ export interface ProgressItemProps {
 }
 
 export interface OnboardingComponentProps {
-  data: string;
-  progressItem: ProgressItemProps;
+  data: string | string[];
+  currentItem: ProgressItemProps;
   formData: FormData;
-  nextData: { id: string; data: string };
-  previousData: { id: string; data: string };
-  handleFormData: (data: string) => string;
+  nextData: { id: PropId; data: string };
+  previousData: { id: PropId; data: string };
+  handleFormData: (data: string | string[]) => void;
 }
 
+export type FormData = {
+  [key in PropId]: string;
+};
 
 export interface OnboardingResultOptions {
   key: string;

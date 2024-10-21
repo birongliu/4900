@@ -3,8 +3,8 @@ import React from "react";
 
 const level = ["Beginner", "Intermediate", "Experienced"];
 
-export default function ExperinceForm({ progressItem, handleFormData, data }: OnboardingComponentProps) {
-  const [selected, setSelected] = React.useState<string | null>(data);
+export default function ExperinceForm({ currentItem, handleFormData, data }: OnboardingComponentProps) {
+  const [selected, setSelected] = React.useState<string | string[]>(data);
 
   const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     e.preventDefault()
@@ -13,8 +13,8 @@ export default function ExperinceForm({ progressItem, handleFormData, data }: On
   }
   
   return (
-    <div className="w-full px-5">
-      <h1 className="text-2xl font-bold font-poppins text-center py-2">{progressItem.question}</h1>
+    <div className="px-5 h-96">
+      <h1 className="text-2xl font-bold font-poppins text-center py-2 ">{currentItem.question}</h1>
       <ul className="grid md:grid-cols-2 grid-cols-1 gap-3 py-5">
         {level.map((item) => (
           <li id={item} onClick={handleClick} key={item} className={`border rounded-full py-2 cursor-pointer ${selected === item ? "bg-slate-500" : "bg-inherit"} `}>
