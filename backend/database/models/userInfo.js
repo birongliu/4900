@@ -23,11 +23,11 @@ export async function getUserByID(userID) {
     return data;
 }
 
-export async function addPetToUser(userID, petID) {
-    const user = await getUserByID(userID);
-    if (!user)
-        throw new Error("User not found");
+// export async function addPetToUser(userID, petID) {
+//     const user = await getUserByID(userID);
+//     if (!user)
+//         throw new Error("User not found");
 
-    user.pets.push(petID);
-    await user.save();
-}
+//     user.pets.push(petID);
+//     await user.save();
+// }
