@@ -21,7 +21,7 @@ export default function ResultForm({
             }`}
             key={key}
           >
-            {key}: {value}
+            {key}: {key === "BreedType" && Array.isArray(value) ? value.join(", ") : value}
           </div>
         ))}
       </div>

@@ -38,26 +38,41 @@ export default function BreedTypeForm({
   const [selected, setSelected] = React.useState<string[]>(
     Array.isArray(data) ? data : []
   );
+  // const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+  //   e.preventDefault();
+  //   const item = selected.find((k) => k === e.currentTarget.id);
+  //   let resolve = [...selected, e.currentTarget.id];
+  //   if(item && item.includes("No Preference")) {
+  //     resolve.splice(resolve.indexOf(item))
+  //   } 
+
+  //   setSelected(resolve)
+  //   handleFormData(resolve);
+  // };
+
   const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     e.preventDefault();
-    const item = selected.find((k) => k === e.currentTarget.id);
-    let resolve = [...selected, e.currentTarget.id];
-    const removeSelected = (id: string) => {
-      const index = resolve.indexOf(id)
-      resolve.splice(index, 1)
-      console.log(resolve)
-      setSelected(resolve);
-    }
-    if(item === "No Preference") {
-      removeSelected(item)
-      console.log("Selected no Preference")
-
+    const clickedItem = e.currentTarget.id;
+    let updatedSelection;
+  
+    if (clickedItem === "No Preference") {
+      if(selected.includes("No Preference")) {
+        console.log("No Preference is already selected");
+        selected.splice(selected.indexOf("No Preference"), 1);
+        setSelected(selected);
+        handleFormData(selected);
+        return;
+      }
+      updatedSelection = ["No Preference"];
     } else {
-      console.log("without Preference")
-    } 
-    handleFormData(resolve);
+      updatedSelection = selected.includes(clickedItem)
+        ? selected.filter((item) => item !== clickedItem)
+        : [...selected.filter((item) => item !== "No Preference"), clickedItem];
+    }
+  
+    setSelected(updatedSelection);
+    handleFormData(updatedSelection);
   };
-
   return (
     <div className="w-full py-5">
       <div className="py-2">
