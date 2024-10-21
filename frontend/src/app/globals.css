@@ -4,11 +4,6 @@
 @tailwind utilities;
 
 
-@layer body {
-    body {
-        @apply bg-light-primary dark:bg-slate-700;
-    }
-}
 
 @layer base {
     html {
