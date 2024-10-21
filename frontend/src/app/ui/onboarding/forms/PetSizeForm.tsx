@@ -12,7 +12,7 @@ export default function PetSizeForm({
   handleFormData,
   data,
 }: OnboardingComponentProps) {
-  const [selected, setSelected] = React.useState<string | null>(data);
+  const [selected, setSelected] = React.useState(data);
 
   const handleClick = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     e.preventDefault()
