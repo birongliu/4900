@@ -6,8 +6,8 @@ const petModel = new Schema({
     name: String,
     animalType: String,
     feature: String,
-    userID: { type: String, ref: "users", default: null }, // User who adopts the pet
-    isAdopted: { type: Boolean, default: false }
+    // userID: { type: Schema.Types.ObjectId, ref: "users", default: null }, // User who adopts the pet
+    // isAdopted: { type: Boolean, default: false }
 });
 
 const pets = model("pets", petModel);

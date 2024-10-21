@@ -34,5 +34,7 @@ app.use(limiter)
 app.use("/api/pets", pets)
 app.use("/api/users", users)
 app.use("/api/aiResponse", aiResponse)
+app.use("api/chat", chat)
+app.use("app.post", post)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
