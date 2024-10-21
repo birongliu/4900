@@ -8,7 +8,7 @@ export default function QualitiesForm({
   handleFormData,
   data,
 }: OnboardingComponentProps) {
-  const [qualities, setQaulities] = React.useState<string>(data);
+  const [qualities, setQaulities] = React.useState(data);
 
   function handleButton(e:React.ChangeEvent<HTMLTextAreaElement>) {
     e.preventDefault();
