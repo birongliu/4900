@@ -1,21 +1,37 @@
 import { Router } from "express";
-import { getChat, update, create } from "../database/models/chatModel";
+import { getChat, create, update } from "../database/models/chatModel.js";
 
 const router = Router();
 
 router.post("/", async (req, res) => {
-    await create(req.body)
-    res.json("success!")
+    try {
+        await create(req.body)
+        res.json("success!")
+    } catch (error) {
+        res.status(404).send({ message: error.message })
+    }
 });
 
 router.get('/:id', async (req, res) => {
-    const chat = await getChat(id)
-    res.json(chat)
+    try {
+        const id  = req.params.id
+        const chat = await getChat(id)
+        res.json(chat)
+    } catch (error) {
+        res.status(404).send({ message: error.message })
+    }    
 })
 
 router.put('/:id', async (req, res) => {
-    await update(id, req.body)
-    res.json("success!")
+    try {
+        const id = req.params.id
+        const chat = await getChat(id)
+        chat.messages.push(req.body)
+        const result = await update(id, chat)
+        res.json(result)
+    }catch (error) {
+        res.status(404).send({ message: error.message })
+    }   
 })
 
 export default router;

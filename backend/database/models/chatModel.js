@@ -4,7 +4,7 @@ const chatModel = new Schema({
     chatID: String,
     userID: { type: Schema.Types.ObjectId, ref: "users" },
     messages: [{
-        sender: { type: Schema.Types.ObjectId, ref: "users" },
+        sender: { type: String },
         message: String,
         sendTime: { type: Date, default: Date.now }
     }]
@@ -25,5 +25,9 @@ export async function getChat(chatID) {
     })
     if (!data) return null
     return data;
+}
+
+export async function update(id, data) {
+    return await chat.updateOne({ chatID: id }, data);
 }
 

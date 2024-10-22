@@ -7,6 +7,8 @@ import cors from 'cors';
 import pets from "./routes/api.pets.js"
 import users from "./routes/api.users.js"
 import aiResponse from "./routes/api.aiResponse.js"
+import chat from "./routes/api.chat.js"
+import post from "./routes/api.post.js"
 import { authMiddleware } from './middleware/auth.middleware.js';
 import { rateLimit } from 'express-rate-limit'
 
@@ -34,7 +36,7 @@ app.use(limiter)
 app.use("/api/pets", pets)
 app.use("/api/users", users)
 app.use("/api/aiResponse", aiResponse)
-app.use("api/chat", chat)
-app.use("app.post", post)
+app.use("/api/chat", chat)
+app.use("/api/post", post)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
