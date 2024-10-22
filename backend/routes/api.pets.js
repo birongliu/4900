@@ -1,6 +1,5 @@
 import { Router } from "express"
 import { findAll, get, create, update } from "../database/models/petModel.js"
-import { addPetToUser } from "../database/models/userInfo.js"
 import { z } from "zod"
 
 const router = Router()
