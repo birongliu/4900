@@ -1,5 +1,13 @@
 export interface PanelProgressBarProps {
-  progressItems: ProgressItemProps[];
+  progressItems: {
+    status: "completed" | "incomplete" | "current";
+    completedColor: {
+      from: `from-[${string}]`;
+      to: `to-[${string}]`;
+      type?: string;
+    };
+    question: string;
+  }[];
   className?: string;
 }
 
@@ -7,18 +15,25 @@ const ActionTypes = Object.freeze({
   SUBMIT: "submit",
   NEXT: "next",
   PREVIOUS: "previous",
-})
+});
 
 type ActionTypeKeys = keyof typeof ActionTypes;
-export type ActionType = typeof ActionTypes[ActionTypeKeys];
+export type ActionType = (typeof ActionTypes)[ActionTypeKeys];
 
-type PropId = "Introduction" | "Experience" | "Qualities" |"PetSize" | "AnimalType" | "BreedType" | "Result";
+type PropId =
+  | "Introduction"
+  | "Experience"
+  | "Qualities"
+  | "PetSize"
+  | "AnimalType"
+  | "BreedType"
+  | "Result";
 
 export interface ProgressItemProps {
   question: string;
-  id: PropId,
+  id: PropId;
 
-  actions: ActionType[],
+  actions: ActionType[];
   completedColor: {
     from: `from-[${string}]`;
     to: `to-[${string}]`;
@@ -46,9 +61,27 @@ export interface OnboardingResultOptions {
 }
 
 export interface Pet {
-  id: number;
+  userID: string | null;
+  id: string;
+  isAdopted: boolean;
   name: string;
+  breeds: [];
   type: string;
-  imgUrl: string;
+  url: string;
   breed: string;
+}
+
+export interface AIOutput {
+  id: string;
+  type: string;
+  breed: string;
+  name: string;
+  description: string;
+  imgUrl: string;
+}
+
+export interface PaginationProps {
+  id: string;
+  name: string;
+  url: string;
 }

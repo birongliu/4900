@@ -36,7 +36,7 @@ export default function About() {
           connect, share experiences, and find their perfect pet companions. Our
           mission is to create a vibrant community where pet enthusiasts can
           discover and adopt their perfect companions while fostering meaningful
-          connections with other pet owners. Whether you&pos;re looking to adopt a
+          connections with other pet owners. Whether you&apos;re looking to adopt a
           pet, seek advice, or simply share your love for animals, PetPals
           provides a comprehensive and engaging platform to meet all your needs.
           Join us in making pet adoption a joyful and connected experience for

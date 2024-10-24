@@ -7,7 +7,6 @@ import cors from 'cors';
 import pets from "./routes/api.pets.js"
 import users from "./routes/api.users.js"
 import aiResponse from "./routes/api.aiResponse.js"
-import { authMiddleware } from './middleware/auth.middleware.js';
 import { rateLimit } from 'express-rate-limit'
 
 

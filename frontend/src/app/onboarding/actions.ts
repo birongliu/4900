@@ -14,6 +14,7 @@ export const completeOnboarding = async (formData: FormData) => {
   })
   try {
     const user = clerkClient().users;
+    console.log(result)
     await user.updateUserMetadata(userId, {
       publicMetadata: {
         onboardingComplete: true,
@@ -39,6 +40,7 @@ async function fetchAIOnboardingResult(
       body: JSON.stringify(formData),
     }
   );
+  console.log(data)
   if(data.status !== 200) return null;
   const response = await data.json();
   return response.data;
