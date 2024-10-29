@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const userModel = new Schema({
     userID: String,
     petPreference: String,
-    pets: [{ type: String, ref: "pets" }]
+    recommendedPets: [String]
 });
 
 const users = model("users", userModel);
