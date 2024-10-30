@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createClerkClient } from '@clerk/backend'
-import { getUserByID } from "../database/models/userInfo.js"
+import { getUserByID, create } from "../database/models/userInfo.js"
 
 const router = Router();
 
@@ -40,5 +40,13 @@ router.get('/:userID', async (req, res) => {
   }
 })
 
+router.post('/:userID', async(req,res)=>{
+  try {
+        await create(req.body)
+        res.json("success!")
+    } catch (error) {
+        res.status(404).send({ message: error.message })
+    } 
+})
 
 export default router;

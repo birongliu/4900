@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getChat, create, update } from "../database/models/chatModel.js";
+import { getChat, create, update } from "../database/models/messageModel.js";
 
 const router = Router();
 

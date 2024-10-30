@@ -1,13 +1,12 @@
 import { Schema, model } from "mongoose";
 
-const chatModel = new Schema({
-    chatID: String,
-    userID: { type: Schema.Types.ObjectId, ref: "users" },
-    messages: [{
-        sender: { type: String },
-        message: String,
-        sendTime: { type: Date, default: Date.now }
-    }]
+const messageModel = new Schema({
+    chatId: String,
+    messageId: String,
+    userType: "sender" | "recipient",
+    userId: String,
+    content: String,
+    createdAt: { type: Date, default: Date.now() }
 });
 
 const chat = model("chat", chatModel);
