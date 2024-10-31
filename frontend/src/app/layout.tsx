@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeContext } from "./ui/navigation/ThemeProvider";
 import { ClerkLoaded, ClerkProvider } from "@clerk/nextjs";
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,12 +22,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <ThemeContext>
-            <ClerkLoaded>
-              {children}
-              <Analytics />
-            </ClerkLoaded>
-          </ThemeContext>
+              <ClerkLoaded>
+                {children}
+                <Analytics />
+              </ClerkLoaded>
         </body>
       </html>
     </ClerkProvider>

@@ -3,6 +3,7 @@ import Shape from "../shared/Shape";
 import Vector from "../shared/Vector";
 import Image from "next/image";
 import Button from "../shared/Button";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -25,7 +26,9 @@ export default function Hero() {
             the homes they deserve.
           </p>
           <Button className="flex items-center space-x-2 text-pretty font-semibold dark:bg-white dark:text-black text-white">
+          <Link href="/dashboard">
             Get Started
+            </Link>
           </Button>
         </div>
         <div className="lg:flex justify-center hidden h-full">

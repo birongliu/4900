@@ -6,10 +6,14 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import pets from "./routes/api.pets.js"
 import users from "./routes/api.users.js"
+<<<<<<< HEAD
+import aiResponse from "./routes/api.aiResponse.js"
+=======
 import aiResponse from "./routes/api.ai.js"
 import chat from "./routes/api.chat.js"
 import post from "./routes/api.post.js"
 import { authMiddleware } from './middleware/auth.middleware.js';
+>>>>>>> main
 import { rateLimit } from 'express-rate-limit'
 
 

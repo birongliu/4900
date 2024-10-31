@@ -12,6 +12,7 @@ router.get('/', async (req, res) => {
       const response = await clerkClient.users.getUserList()
       const users = response.data
     // Optionally format the user data as needed
+    console.log('users:', users);
     const userList = users.map(user => ({
       id: user.id,
       email: user.emailAddresses[0]?.emailAddress,
@@ -19,6 +20,7 @@ router.get('/', async (req, res) => {
       createdAt: user.createdAt,
       firstName: user.firstName,
       lastName: user.lastName,
+      roles: user,
     }));
 
     res.json(userList);
