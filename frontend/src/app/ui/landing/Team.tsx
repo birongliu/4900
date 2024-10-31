@@ -1,12 +1,16 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
 import Github from "./components/Github";
 import Linkedin from "./components/Linkedin";
+import bradley from "../../images/teams/bradley.jpeg";
+import birong from "../../images/teams/birongliu.jpeg";
+import shuyi from "../../images/teams/shuyi.jpeg";
+import jessica from "../../images/teams/jessica.jpeg";
 
 interface Member {
   name: string;
   role: string;
-  photo: string;
+  photo: StaticImageData;
   linkedinUrl: string;
   githubUrl?: string;
 }
@@ -15,27 +19,26 @@ const members: Member[] = [
   {
     name: "Bradley Hung",
     role: "Project Manager",
-    photo: "/teams/bradley.jpeg",
+    photo: bradley,
     githubUrl: "https://www.github.com/bradleyhung",
     linkedinUrl: "https://www.linkedin.com/in/bradley-hung/",
   },
   {
     name: "Bi Rong Liu",
     role: "Frontend Developer",
-    photo: "/teams/birong.jpeg",
-    githubUrl: "https://www.github.com/birongliu",
+    photo: birong,
     linkedinUrl: "https://www.linkedin.com/in/birongliu/",
   },
   {
     name: "Shuyi Zhou",
     role: "Backend Developer",
-    photo: "/teams/shuyi.jpeg",
+    photo: shuyi,
     linkedinUrl: "https://www.linkedin.com/in/shuyi-zhou-296ab6246/",
   },
   {
     name: "Jessica Jiang",
     role: "UI/UX Designer",
-    photo: "/teams/jessica.jpeg",
+    photo: jessica,
     linkedinUrl: "https://www.linkedin.com/in/jjessica415/",
   },
 ];
