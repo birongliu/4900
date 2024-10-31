@@ -1,17 +1,39 @@
+import { response } from "express";
 import { Schema, model } from "mongoose";
 
 const petModel = new Schema({
-    petID: String,
-    breedType: String,
-    name: String,
-    animalType: String,
-    feature: String,
-    userID: { type: String, ref: "users", default: null }, // User who adopts the pet
-    isAdopted: { type: Boolean, default: false }
+    name: {
+        type: String,
+    },
+    animalId: {
+        type: String,
+
+    },
+    sex: String,
+    birthDate: { type: Date, default: null },
+    breed: String,
+    size: String,
+    // housetrained: Boolean,
+    health: {
+        isCurrentVaccinations: Boolean,
+        isSpecialNeeds: Boolean
+    },
+    goodWith: {
+        dogs: { type: Boolean, default: false },
+        cats: { type: Boolean, default: false },
+        kids: { type: Boolean, default: false }
+    },
+    isAdoptionPending: Boolean,
+    locationID: String,
+    descriptionText: String,
+    pictureThumbnailUrl: String,
+    updatedDate: Date
+    // userID: { type: Schema.Types.ObjectId, ref: "users", default: null }, // User who adopts the pet
+    // isAdopted: { type: Boolean, default: false }
 });
 
 const pets = model("pets", petModel);
-
+export { pets }
 
 export async function create(data) {
     const result = await pets.create(data)

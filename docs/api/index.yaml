@@ -1,0 +1,19 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: PetPals API Docs
+  description:  A collection of internal apis used by PetPal's website and it's application
+  license:
+    name: MIT
+
+servers:
+  - url: https://cisc-4900-0dx9.onrender.com/api
+
+tags:
+  - name: users
+  - name: pets
+  - name: chats
+
+paths:
+    /users:
+        $ref: './resources/users/users.yaml'

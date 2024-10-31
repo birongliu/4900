@@ -1,6 +1,5 @@
 import { Router } from "express"
 import { findAll, get, create, update } from "../database/models/petModel.js"
-import { addPetToUser } from "../database/models/userInfo.js"
 import { z } from "zod"
 
 const router = Router()
@@ -37,24 +36,24 @@ router.post("/", async (req, res) => {
     res.json({ data: pet})
 })
 
-router.post("/adopt/:id", async (req, res) => {
-    const petID = req.params.id;
-    const userID = req.body.userID; 
+// router.post("/adopt/:id", async (req, res) => {
+//     const petID = req.params.id;
+//     const userID = req.body.userID; 
 
-    try {
-        const pet = await get(petID);
-        if (!pet)
-            return res.status(404).json({ message: "Pet not found" });
-        if (pet.isAdopted)
-            return res.status(400).json({ message: "Pet is already adopted" });
+//     try {
+//         const pet = await get(petID);
+//         if (!pet)
+//             return res.status(404).json({ message: "Pet not found" });
+//         if (pet.isAdopted)
+//             return res.status(400).json({ message: "Pet is already adopted" });
 
-        await update(petID, { userID: userID, isAdopted: true });
-        await addPetToUser(userID, petID);
+//         await update(petID, { userID: userID, isAdopted: true });
+//         await addPetToUser(userID, petID);
 
-        res.status(200).json({ message: "Pet adopted successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "An error occurred during the adoption process" });
-    }
-});
+//         res.status(200).json({ message: "Pet adopted successfully" });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "An error occurred during the adoption process" });
+//     }
+// });
 export default router

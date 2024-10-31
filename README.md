@@ -11,7 +11,7 @@
 ## Overview
 
 ### Description
-A web application that allows users to discover the joy of pet adoption alongside a supportive community of animal lovers. PetPals is a space where you can not only fiind you perfect pet match, but also share experiences, advice and love with other pet owners. Let's male adoption the start of a new journey together!
+A web application that allows users to discover the joy of pet adoption alongside a supportive community of animal lovers. PetPals is a space where you can not only fiind you perfect pet match, but also share experiences, advice and love with other pet owners. Let's make adoption the start of a new journey together!
 
 ## Product Specification
 
