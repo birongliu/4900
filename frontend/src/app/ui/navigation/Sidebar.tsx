@@ -1,4 +1,5 @@
 "use client";
+import { useClerk, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,9 +25,22 @@ const navigation = [
     name: "Settings",
     href: "/dashboard/settings",
   },
+  {
+    icon: "/dashboard/logout.svg",
+    name: "Logout",
+    href: "/",
+  },
 ];
 export default function Sidebar() {
   const path = usePathname();
+  const user = useUser()
+  const { signOut } = useClerk()
+
+  if(!user.isSignedIn){
+    return null
+  }
+
+
   return (
     <div className="text-white md:m-0 items-center  justify-center md:rounded-none sm:rounded-xl right-0 md:fixed md:top-0 md:left-0 md:h-full md:block fixed bottom-0 ml-auto mr-auto w-full flex flex-row bg-light-mint md:w-20 lg:w-64 left-0">
       <div className="flex items-center lg:justify-start justify-center">
@@ -46,6 +60,7 @@ export default function Sidebar() {
           <Link
             href={nav.href}
             key={nav.name}
+            onClick={async () => nav.name === "Logout" ? await signOut() : () => void 0}
             className={`flex p-2 rounded-xl md:items-center md:pl-2 md:rounded-xl ${
               path === nav.href ? "bg-light-rose" : ""
             } lg:mx-4 hover:bg-light-rose hover:rounded-xl  lg:justify-start justify-center  gap-2 my-2 mx-2  py-2`}
@@ -63,17 +78,17 @@ export default function Sidebar() {
           </Link>
         ))}
       </div>
-      <div className="md:bottom-10 sticky">
-        <button className="flex lg:justify-center rounded-xl py-2 md:justify-center hover:cursor-pointer hover:bg-light-rose w-full h-full bottom-0 ">
+      <div className="md:bottom-10 sticky rounded-xl border-2 p-2 m-2 bg-light-rose ">
+        <button className="flex items-center gap-2">
           <Image
-            className="h-8 w-10"
-            src="/dashboard/logout.svg"
+            className="h-10 w-10 rounded-full"
+            src={user.user.imageUrl}
             alt="logout"
             width={25}
             height={25}
           />
           <span className="text-gray-500 hidden lg:block text-lg font-poppins">
-            Logout
+            {user.user.fullName}
           </span>
         </button>
       </div>
