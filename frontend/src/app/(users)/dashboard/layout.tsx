@@ -8,9 +8,9 @@ export default function LandingLayout({
   return (
     <section className="h-screen bg-white">
       <ClerkLoaded>
-      <Sidebar />
+        <Sidebar />
         {children}
-        </ClerkLoaded>
+      </ClerkLoaded>
     </section>
   );
 }

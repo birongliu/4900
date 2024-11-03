@@ -40,10 +40,9 @@ export default function Sidebar() {
     return null
   }
 
-
   return (
-    <div className="text-white md:m-0 items-center  justify-center md:rounded-none sm:rounded-xl right-0 md:fixed md:top-0 md:left-0 md:h-full md:block fixed bottom-0 ml-auto mr-auto w-full flex flex-row bg-light-mint md:w-20 lg:w-64 left-0">
-      <div className="flex items-center lg:justify-start justify-center">
+    <div className="text-white border-2 z-10 shadow-md flex justify-center md:m-0 rounded-xl md:rounded-none md:fixed md:top-0 md:left-0 md:h-full md:block fixed bottom-10 left-[50%] md:-translate-x-0 -translate-x-[50%] bg-light-mint md:w-20 lg:w-64">
+      <div className="md:flex items-center lg:justify-start justify-center hidden py-1">
         <Image
           className="h-20 w-20 border-black"
           src="/logo/black-logo.svg"
@@ -55,18 +54,18 @@ export default function Sidebar() {
           PetPals
         </span>
       </div>
-      <div className="flex md:flex-col h-full">
+      <div className="flex p-2 gap-2 md:flex-col h-full">
         {navigation.map((nav) => (
           <Link
             href={nav.href}
             key={nav.name}
             onClick={async () => nav.name === "Logout" ? await signOut() : () => void 0}
-            className={`flex p-2 rounded-xl md:items-center md:pl-2 md:rounded-xl ${
+            className={`flex lg:justify-start rounded-xl items-center p-2 gap-2 justify-center hover:bg-light-rose ${
               path === nav.href ? "bg-light-rose" : ""
-            } lg:mx-4 hover:bg-light-rose hover:rounded-xl  lg:justify-start justify-center  gap-2 my-2 mx-2  py-2`}
+            }`}
           >
             <Image
-              className="h-8 w-10"
+              className="md:h-8 md:w-10"
               src={nav.icon}
               alt={nav.name}
               width={25}
@@ -77,20 +76,6 @@ export default function Sidebar() {
             </span>
           </Link>
         ))}
-      </div>
-      <div className="md:bottom-10 sticky rounded-xl border-2 p-2 m-2 bg-light-rose ">
-        <button className="flex items-center gap-2">
-          <Image
-            className="h-10 w-10 rounded-full"
-            src={user.user.imageUrl}
-            alt="logout"
-            width={25}
-            height={25}
-          />
-          <span className="text-gray-500 hidden lg:block text-lg font-poppins">
-            {user.user.fullName}
-          </span>
-        </button>
       </div>
     </div>
   );
