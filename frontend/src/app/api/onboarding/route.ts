@@ -16,3 +16,13 @@ export async function POST(request: NextRequest) {
   const data = await response.json();
   return NextResponse.json({ data: data, status: 200 });
 }
+
+
+export async function GET() {
+  const data = await fetch("https://data.cityofnewyork.us/resource/8nqg-ia7v.json")
+  if(data.status !== 200) { 
+    return NextResponse.json({ data: { message: 'Error' }}, { status: 500 });
+  }
+  const response = await data.json();
+  return NextResponse.json({ data: response, status: 200 });
+}

@@ -2,12 +2,12 @@
 import getPet from "@/app/actions/getPets-action";
 import { PaginationProps, Pet } from "@/app/utils/interface";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function PetCompoent({ recommendations }: { recommendations: PaginationProps[] }) {
   const [pets, setPets] = React.useState<Pet[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchPets() {
       const data = await getPet();
       setPets(data);
