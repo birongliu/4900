@@ -17,3 +17,14 @@ body:has([role="dialog"]) {
 body:has([role="user-button"]) {
     @apply overflow-auto;
 }
+
+/* Hide scrollbar for WebKit-based browsers */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for all elements */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

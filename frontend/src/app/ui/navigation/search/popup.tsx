@@ -13,7 +13,6 @@ export default function PopOut<T>({
 }) {
   const [search, setSearch] = React.useState("");
   const [filteredItems, setFilteredItems] = React.useState<T[]>(items);
-  console.log(items);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
