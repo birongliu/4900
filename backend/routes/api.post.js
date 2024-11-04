@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
         await create(req.body)
         res.json("success!")
     } catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     } 
 });
 
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
         const posts = await findAll()
         res.status(200).json(posts)
     } catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     }
 })
 
@@ -27,7 +27,7 @@ router.get('/:title', async (req, res) => {
         const post = await getPostbyTitle(title)
         res.status(200).json(post)
     }catch (error) {
-        res.status(404).send({ message: error.message });
+        res.status(500).send({ message: error.message });
     }
 })
 

@@ -47,7 +47,7 @@ router.post('/:userID', async(req,res)=>{
         await create(req.body)
         res.json("success!")
     } catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     } 
 })
 

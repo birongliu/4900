@@ -13,7 +13,7 @@ const petModel = new Schema({
     birthDate: { type: Date, default: null },
     breed: String,
     size: String,
-    // housetrained: Boolean,
+    housetrained: Boolean,
     health: {
         isCurrentVaccinations: Boolean,
         isSpecialNeeds: Boolean
