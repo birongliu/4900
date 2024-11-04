@@ -7,7 +7,7 @@ async function fetchDataAndSaveToFile() {
       {
         method: 'GET',
         headers: {
-          authorization: 'e51FpSsQ',
+          authorization: process.env.RESCUEGROUPS_API_KEY,
           'Content-Type': 'application/vnd.api+json'
         }
       }

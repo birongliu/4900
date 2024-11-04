@@ -6,14 +6,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import pets from "./routes/api.pets.js"
 import users from "./routes/api.users.js"
-<<<<<<< HEAD
-import aiResponse from "./routes/api.aiResponse.js"
-=======
 import aiResponse from "./routes/api.ai.js"
 import chat from "./routes/api.chat.js"
 import post from "./routes/api.post.js"
+import pinecone from "./routes/api.pinecone.js"
 import { authMiddleware } from './middleware/auth.middleware.js';
->>>>>>> main
 import { rateLimit } from 'express-rate-limit'
 
 
@@ -42,5 +39,6 @@ app.use("/api/users", users)
 app.use("/api/ai", aiResponse)
 app.use("/api/chat", chat)
 app.use("/api/post", post)
+app.use("/api/pinecone", pinecone)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
