@@ -3,13 +3,13 @@ import { Schema, model } from "mongoose";
 const messageModel = new Schema({
     chatId: String,
     messageId: String,
-    userType: "sender" | "recipient",
+    userType: { type: String, enum: ["sender" | "recipient"] },
     userId: String,
     content: String,
     createdAt: { type: Date, default: Date.now() }
 });
 
-const chat = model("chat", chatModel);
+const chat = model("chat", messageModel);
 
 
 export async function create(data) {

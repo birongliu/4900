@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
         await create(req.body)
         res.json("success!")
     } catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     }
 });
 
@@ -18,7 +18,7 @@ router.get('/:id', async (req, res) => {
         const chat = await getChat(id)
         res.json(chat)
     } catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     }    
 })
 
@@ -30,7 +30,7 @@ router.put('/:id', async (req, res) => {
         const result = await update(id, chat)
         res.json(result)
     }catch (error) {
-        res.status(404).send({ message: error.message })
+        res.status(500).send({ message: error.message })
     }   
 })
 
