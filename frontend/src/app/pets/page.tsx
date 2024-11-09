@@ -16,7 +16,6 @@ import Image from "next/image";
 import { Searchbar } from "../ui/navigation/search/search";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { cache } from "react";
 export default function Hero() {
   const [result, setResult] = React.useState<AIOutput[]>([]);
   const itemsPerPage = 12;

@@ -58,7 +58,6 @@ export default function Hero() {
 
   return (
     <div className="relative lg:ml-64 md:ml-20 p-4 pb-28 ">
-      <UserButton />
       <div className="max-w-6xl mx-auto p-6 space-y-8">
         <div>
           <h1 className="text-4xl font-bold text-[#3D0C3C]">Dashboard</h1>
