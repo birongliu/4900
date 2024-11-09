@@ -42,9 +42,6 @@ const config: Config = {
           steel: '#94A3B8', // Dark Steel
         }
       },
-      backgroundColor: {
-
-      }
     },
   },
   plugins: [],

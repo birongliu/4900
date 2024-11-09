@@ -12,7 +12,7 @@ interface Member {
   role: string;
   photo: StaticImageData;
   linkedinUrl: string;
-  githubUrl?: string;
+  githubUrl?: `https://www.github.com/${string}`;
 }
 
 const members: Member[] = [
@@ -27,6 +27,7 @@ const members: Member[] = [
     name: "Bi Rong Liu",
     role: "Frontend Developer",
     photo: birong,
+    githubUrl: "https://www.github.com/birongliu",
     linkedinUrl: "https://www.linkedin.com/in/birongliu/",
   },
   {

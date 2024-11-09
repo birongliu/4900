@@ -4,7 +4,7 @@ export default function MenuIcon() {
       height={43}
       width={51}
       viewBox="0 0 51 43"
-      className="stroke-darkMaroon dark:stroke-white"
+      className="stroke-darkMaroon stroke-dark-maroon dark:stroke-white"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

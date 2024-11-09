@@ -39,7 +39,7 @@ export const ViewProfile = () => {
         </div>
         <button
           type="submit"
-          className="text-white dark:bg-white dark:text-black border w-full py-2 bg-black rounded-xl"
+          className="text-white dark:bg-white dark:text-black border w-full py-2 bg-dark-maroon rounded-xl"
         >
           Submit
         </button>

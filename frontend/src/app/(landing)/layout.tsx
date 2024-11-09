@@ -9,7 +9,7 @@ export default function LandingLayout({
   const navigationItems = ["About", "Explore", "Team"];
 
   return (
-    <section className="">
+    <section className="bg-light-ivory">
       <Header navigationItems={navigationItems} />
       {children}
       <Footer />
