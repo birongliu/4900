@@ -12,6 +12,9 @@ import post from "./routes/api.post.js"
 import pinecone from "./routes/api.pinecone.js"
 import { authMiddleware } from './middleware/auth.middleware.js';
 import { rateLimit } from 'express-rate-limit'
+import { createServer } from 'node:http';
+import { Server } from 'socket.io';
+import { create } from './database/models/messageModel.js'
 
 
 const port = process.env.PORT || 3001;
@@ -41,4 +44,21 @@ app.use("/api/chat", chat)
 app.use("/api/post", post)
 app.use("/api/pinecone", pinecone)
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+const server = createServer(app);
+const io = new Server(server);
+io.on('connection', (socket) => {
+	console.log('a user connected');
+	socket.on('message', async (data) => {
+		try {
+			console.log('Message received:', data);
+			await create(data)
+			io.emit('chat message: ', data);
+		} catch (error) {
+			console.log(error)
+		}
+		
+})
+		
+});
+
+server.listen(port, () => console.log(`Server is running on port ${port}`));

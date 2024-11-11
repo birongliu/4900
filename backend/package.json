@@ -12,6 +12,8 @@
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
+    "node-http": "^0.0.5",
+    "socket.io": "^4.8.1",
     "zod": "^3.23.8"
   },
   "name": "backend",

@@ -3,7 +3,6 @@ import { Schema, model } from "mongoose";
 const messageModel = new Schema({
     chatId: String,
     messageId: String,
-    userType: { type: String, enum: ["sender" | "recipient"] },
     userId: String,
     content: String,
     createdAt: { type: Date, default: Date.now() }
