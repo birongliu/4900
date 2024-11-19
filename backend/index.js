@@ -1,44 +1,60 @@
-import 'dotenv/config'
-import './database/db.js'
-import './routes/api.ai.js'
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import pets from "./routes/api.pets.js"
-import users from "./routes/api.users.js"
-import aiResponse from "./routes/api.ai.js"
-import chat from "./routes/api.chat.js"
-import post from "./routes/api.post.js"
-import pinecone from "./routes/api.pinecone.js"
-import { authMiddleware } from './middleware/auth.middleware.js';
-import { rateLimit } from 'express-rate-limit'
-
-
+import "dotenv/config";
+import "./database/db.js";
+import "./routes/api.ai.js";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import pets from "./routes/api.pets.js";
+import users from "./routes/api.users.js";
+import aiResponse from "./routes/api.ai.js";
+import chat from "./routes/api.chat.js";
+import post from "./routes/api.post.js";
+import pinecone from "./routes/api.pinecone.js";
+import { WebSocketServer } from "ws";
+import { rateLimit } from "express-rate-limit";
+import http from "http";
 const port = process.env.PORT || 3001;
 
 const app = express();
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(bodyParser.json());
 
-app.use(cors({
-    origin: process.env.FRONTEND_URL
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+  })
+);
+
+
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+
+wss.on("connection", (ws) => {
+	ws.on("message", (message) => {
+		console.log(`Received message => ${message}`);
+		ws.emit("message", message);
+	});
+	ws.send("Hello, I am a server");
+});
+
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-	message: "Too many requests"
-})
-app.use(limiter)
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  message: "Too many requests",
+});
+app.use(limiter);
 
-app.use("/api/pets", pets)
-app.use("/api/users", users)
-app.use("/api/ai", aiResponse)
-app.use("/api/chat", chat)
-app.use("/api/post", post)
-app.use("/api/pinecone", pinecone)
+app.use("/api/pets", pets);
+app.use("/api/users", users);
+app.use("/api/ai", aiResponse);
+app.use("/api/chat", chat);
+app.use("/api/post", post);
+app.use("/api/pinecone", pinecone);
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+server.listen(port, () => console.log(`Server is running on port ${port}`));

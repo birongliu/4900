@@ -65,7 +65,7 @@ export default function Hero() {
             Welcome back, {user.firstName}!
           </p>
         </div>
-
+        <UserButton />
         <div className="space-y-4">
           <div className="flex justify-between items-baseline">
             <div>
@@ -147,7 +147,10 @@ export default function Hero() {
               style={{ transform: `translateX(-${activeSlide * 100}%)` }}
             >
               {otherPets.map((pet) => (
-                <div key={pet.id} className="flex-none relative w-full">
+                <div onClick={() => {
+                  setIsOpen(true);
+                  setSelectedPet(pet);
+                }} key={pet.id} className="flex-none relative w-full">
                   <Image
                     src={pet.pictureThumbnailUrl}
                     alt={pet.type}

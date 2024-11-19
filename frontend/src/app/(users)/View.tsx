@@ -1,6 +1,5 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useTheme } from "next-themes";
 import { updateUser } from "../actions/updateUser-action";
