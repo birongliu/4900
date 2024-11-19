@@ -2,10 +2,8 @@ import { Schema, model } from "mongoose";
 
 const messageModel = new Schema({
     chatId: String,
-    messageId: String,
-    userType: { type: String, enum: ["sender" | "recipient"] },
-    userId: String,
-    content: String,
+    senderId: String,
+    message: String,
     createdAt: { type: Date, default: Date.now() }
 });
 
@@ -19,9 +17,9 @@ export async function create(data) {
 
 
 export async function getChat(chatID) {
-    const data = await chat.findOne({
+    const data = await chat.findAll({
         chatID: { $eq: chatID }
-    })
+    }).sort({"createdAt": 1})
     if (!data) return null
     return data;
 }
