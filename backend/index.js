@@ -19,9 +19,11 @@ import { create } from './database/models/messageModel.js'
 const port = process.env.PORT || 3001;
 
 const app = express();
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(bodyParser.json());
 
@@ -32,11 +34,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
-	message: "Too many requests"
-})
-app.use(limiter)
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  message: "Too many requests",
+});
+app.use(limiter);
 
 app.use("/api/pets", pets)
 app.use("/api/users", users)

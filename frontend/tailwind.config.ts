@@ -33,6 +33,8 @@ const config: Config = {
           ivory: '#F1EFE4', // Light Ivory
           peach: '#F3E1C8', // Light Peach
           sand: '#E3CDAD', // Light Sand
+          blue: "#F7F7FD", // Light Blue
+          gray: "#EFEFEF",
         },
         dark: {
           maroon: '#2F0016', // Dark Maroon
@@ -42,9 +44,6 @@ const config: Config = {
           steel: '#94A3B8', // Dark Steel
         }
       },
-      backgroundColor: {
-
-      }
     },
   },
   plugins: [],

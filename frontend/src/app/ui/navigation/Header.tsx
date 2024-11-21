@@ -42,12 +42,12 @@ export default function Header({ navigationItems, className }: { className?: str
         />
       )}
       <ul
-        className={`items-center ${isLandingPage ? "block" : "hidden"} absolute gap-2 lg:mt-0 mt-5 w-full lg:relative lg:justify-center lg:top-auto top-20 flex-col flex lg:w-auto ${
+        className={` items-center ${isLandingPage ? "block" : "hidden"} left-0 w-full border-black absolute gap-2 lg:mt-0 mt-5  lg:relative lg:justify-center lg:top-auto top-20 flex-col flex lg:w-auto ${
           isOpen ? "block" : "hidden"
         } lg:flex lg:flex-row `}
       >
         {isLandingPage && navigationItems && navigationItems.map((item, index) => (
-          <Link className="w-full px-10 py-4  inset-0  z-10 cursor-pointer hover:bg-text-secondary lg:hover:bg-in" key={index} href={`#${item}`}>
+          <Link className="w-full px-10 py-4 lg:hover:bg-inherit hover:bg-light-peach inset-0  z-10 cursor-pointer hover:bg-text-secondary lg:hover:bg-in" key={index} href={`#${item}`}>
               {item}
           </Link>
         ))}
@@ -55,12 +55,12 @@ export default function Header({ navigationItems, className }: { className?: str
      
       <div className="flex justify-center items-center gap-1 px-5 lg:px-0">
         <SignedOut>
-          <Button className="text-white rounded-lg font-poppins font-semibold dark:bg-white dark:text-darkMaroon">
+          <Button className="text-white bg-dark-maroon rounded-lg font-poppins font-semibold dark:bg-white dark:text-darkMaroon">
             <SignInButton />
           </Button>
         </SignedOut>
         <SignedIn>
-          <div role="user-button" className={`flex items-center overflow ${isLandingPage ? "border rounded-xl p-2  font-poppins dark:text-black dark:bg-white " : ""}`}>
+          <div role="user-button" className={`flex items-center overflow ${isLandingPage ? "border rounded-xl p-2  text-ms font-poppins dark:text-black dark:bg-white " : ""}`}>
             {isLandingPage ? <Link href="/dashboard">Dashboard</Link> : <UserButton />}
           </div>
         </SignedIn>

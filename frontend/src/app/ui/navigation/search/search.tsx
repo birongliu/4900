@@ -14,7 +14,7 @@ export function Searchbar<T>({ data, filter, render }: { data: T[], render: (ite
     <Fragment>
       <button
         onClick={handleOpen}
-        className="p-5 border-2 w-full  rounded-xl overflow-hidden h-16 bg-light-secondary shadow-sm flex group items-center"
+        className="p-5 bg-light-ivory border-2 w-full  rounded-xl overflow-hidden h-16 bg-light-secondary shadow-sm flex group items-center"
       >
         <div className="flex items-center justify-center dark:fill-white fill-dark">
           <svg

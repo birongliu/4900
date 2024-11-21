@@ -7,7 +7,7 @@ export default function CloseIcon({ className }: { className?: string }) {
       height={43}
       width={50}
       viewBox="0 0 43 43"
-      className={cn("stroke-darkMaroon dark:stroke-white", className)}
+      className={cn("stroke-darkMaroon stroke-dark-maroon dark:stroke-white", className)}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

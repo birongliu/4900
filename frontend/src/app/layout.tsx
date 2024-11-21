@@ -4,6 +4,11 @@ import "./globals.css";
 import { ThemeContext } from "./ui/navigation/ThemeProvider";
 import { ClerkLoaded, ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/react";
+import {
+  QueryClient,
+  QueryClientContext,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,14 +23,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const client = new QueryClient();
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-              <ClerkLoaded>
-                {children}
-                <Analytics />
-              </ClerkLoaded>
+          <ClerkLoaded>
+            {children}
+            <Analytics />
+          </ClerkLoaded>
         </body>
       </html>
     </ClerkProvider>

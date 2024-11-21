@@ -18,7 +18,7 @@ export default function PanelProgressBar({
                     `${completedColor.from} ${completedColor.to}`) ||
                   (status === "current" && " border-2 bg-lightGray border-darkMaroon") ||
                   (status === "incomplete" && " bg-lightGray")
-                } bg-black w-full`}
+                } bg-dark-maroon w-full`}
               />
             </li>
           );

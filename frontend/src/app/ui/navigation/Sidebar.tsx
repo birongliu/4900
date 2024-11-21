@@ -18,7 +18,7 @@ const navigation = [
   {
     icon: "/dashboard/chat.svg",
     name: "Chat",
-    href: "/dashboard/chat",
+    href: "/chat",
   },
   {
     icon: "/dashboard/settings.svg",

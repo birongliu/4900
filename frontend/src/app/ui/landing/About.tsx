@@ -23,7 +23,7 @@ export default function About() {
   return (
     <section
       id="About"
-      className="flex items-center px-12 md:px-24 py-28 justify-center light:bg-lightBeige"
+      className="flex  items-center rounded-xl md:px-24 border-2 px-16 py-20 mt-28 justify-center bg-light-peach"
     >
       <div className="max-w-7xl w-full flex flex-col items-center ">
         <h1 className="text-4xl md:text-5xl font-bold font-poppins dark:text-white  text-primary leading-tight">
@@ -46,7 +46,7 @@ export default function About() {
           {cards.map((card, index) => (
             <div
               key={index}
-              className="flex  rounded-xl flex-col p-8 bg-gradient-to-b from-lightBeige to-darkMaroon gap-3 justify-center  w-72 h-96"
+              className="flex bg-black  rounded-xl flex-col p-8 bg-gradient-to-b from-lightBeige to-darkMaroon gap-3 justify-center  w-72 h-96"
             >
               <Image
                 alt={card.title}
@@ -57,7 +57,7 @@ export default function About() {
               <h1 className="font-bold font-poppins text-2xl text-lightBeige">
                 {card.title}
               </h1>
-              <p className="text-softCream font-poppins">{card.description}</p>
+              <p className="text-light-rose text-clip font-poppins">{card.description}</p>
               <a
                 href="/"
                 className="text-lightBeige font-poppins bg-inherit w-32 hover:underline rounded-xl py-2 px-0"

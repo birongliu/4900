@@ -46,7 +46,7 @@ export async function findAll() {
 
 export async function get(petID) {
     const data = await pets.findOne({
-        petID: { $eq: petID }
+        animalId: { $eq: petID }
     })
     if (!data) return null
     return data;

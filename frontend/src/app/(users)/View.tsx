@@ -1,6 +1,5 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
-import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useTheme } from "next-themes";
 import { updateUser } from "../actions/updateUser-action";
@@ -39,7 +38,7 @@ export const ViewProfile = () => {
         </div>
         <button
           type="submit"
-          className="text-white dark:bg-white dark:text-black border w-full py-2 bg-black rounded-xl"
+          className="text-white dark:bg-white dark:text-black border w-full py-2 bg-dark-maroon rounded-xl"
         >
           Submit
         </button>

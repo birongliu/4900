@@ -13,7 +13,8 @@ router.post("/", async (req, res) => {
         name: string,
         type: string,
         breed: string,
-        imgUrl: string,
+        pictureThumbnailUrl: string,
+        animalId: string,
     }]`;
   // const response = await fetch(`${process.env.BACKEND_URL}/api/pets`)
   // const petData = JSON.stringify(await response.json())
