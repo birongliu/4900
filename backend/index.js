@@ -14,7 +14,7 @@ import { authMiddleware } from './middleware/auth.middleware.js';
 import { rateLimit } from 'express-rate-limit'
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { create } from './database/models/messageModel.js'
+import { sendMessage } from './database/models/messageModel.js'
 
 const port = process.env.PORT || 3001;
 
@@ -55,11 +55,11 @@ const io = new Server(server, {
 
 // Handle socket connection
 io.on('connection', (socket) => {
-	const users = {}; //Map userId to socket.id
-	socket.on('connected', async (userId) => {
-		users[userId] = socket.id;
-		console.log('User connected:', userId);
-	})
+	// const users = {}; //Map userId to socket.id
+	// socket.on('connected', async (userId) => {
+	// 	users[userId] = socket.id;
+	// 	console.log('User connected:', userId);
+	// })
 
 	// Listen for incoming messages from client-side
 	socket.on('room message', async (data, callback) => {
@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
 		console.log('Received message data:', data);
 
 		// Save message to the database
-		const newMessage = await create({
+		const newMessage = await sendMessage({
 			chatId: data.chatId,
 			senderId: data.senderId,
 			message: data.message,
@@ -86,25 +86,25 @@ io.on('connection', (socket) => {
 	}
 	});
 
-	socket.on("private message", async (data, to) => {
-		recipientSocketId = users[to]
-		// Save message to the database
-		const newMessage = await create({
-			chatId: data.chatId,
-			senderId: data.senderId,
-			message: data.message,
-		});
-		//send message to specific user
-		if (recipientSocketId) {
-			socket.to(recipientSocketId).to(socket.id).emit("private message", {
-				newMessage,
-				to,
-			});
-			console.log(`Message sent to ${to}: ${content}`)
-		}else {
-      		console.log(`User ${recipientUserId} is not connected`);
-    	}
-  });
+// 	socket.on("private message", async (data, to) => {
+// 		recipientSocketId = users[to]
+// 		// Save message to the database
+// 		const newMessage = await create({
+// 			chatId: data.chatId,
+// 			senderId: data.senderId,
+// 			message: data.message,
+// 		});
+// 		//send message to specific user
+// 		if (recipientSocketId) {
+// 			socket.to(recipientSocketId).to(socket.id).emit("private message", {
+// 				newMessage,
+// 				to,
+// 			});
+// 			console.log(`Message sent to ${to}: ${content}`)
+// 		}else {
+//       		console.log(`User ${recipientUserId} is not connected`);
+//     	}
+//   });
 		
 
 	// Handle disconnection

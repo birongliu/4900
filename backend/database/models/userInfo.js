@@ -1,9 +1,10 @@
 import { Schema, model } from "mongoose";
 
 const userModel = new Schema({
-    userID: String,
-    petPreference: String,
-    recommendedPets: [String]
+    userId: String,
+    petPreference: Object,
+    favoritePets: [String],
+    friends: { type: [String], default: [] }
 });
 
 const users = model("users", userModel);
@@ -15,12 +16,30 @@ export async function create(data) {
 export async function findAll() {
     return await users.find()
 } 
-export async function getUserByID(userID) {
-    const data = await users.findOne({
-        userID,
+export async function getUserByName(userName) {
+    const user = await users.findOne({
+        userName,
     })
-    if (!data) return null
-    return data;
+    if (!user) return null
+    return user;
+}
+export async function getUserById(userId) {
+    const user = await users.findOne({
+        userId,
+    })
+    if (!user) return null
+    return user;
+}
+export function getFriends(userId) {
+    const friends =  users.findOne({
+        userId: userId,
+    }).projection({ friends})
+    return friends;
+}
+
+export function addFriend(user, friend) {
+    user.friends.push(friend.userId)
+    
 }
 
 // export async function addPetToUser(userID, petID) {
