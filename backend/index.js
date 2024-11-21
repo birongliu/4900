@@ -39,11 +39,12 @@ const limiter = rateLimit({
   message: "Too many requests",
 });
 app.use(limiter);
-
+import rooms from "./routes/api.chatRoom.js"
 app.use("/api/pets", pets)
 app.use("/api/users", users)
 app.use("/api/ai", aiResponse)
 app.use("/api/chat", chat)
+app.use("/api/rooms", rooms)
 app.use("/api/post", post)
 app.use("/api/pinecone", pinecone)
 
@@ -62,15 +63,25 @@ io.on('connection', (socket) => {
 	// })
 
 	// Listen for incoming messages from client-side
+	console.log(socket)
 	socket.on('room message', async (data, callback) => {
 	try {
 		console.log('Received message data:', data);
 
 		// Save message to the database
-		const newMessage = await sendMessage({
-			chatId: data.chatId,
+		/**
+		 * {
+			roomId: data.roomId,
 			senderId: data.senderId,
-			message: data.message,
+			reciver: data.reciver,
+			data: data.data,
+		}
+		 */
+		const newMessage = await sendMessage({
+			roomId: data.roomId,
+			senderId: data.senderId,
+			reciver: data.reciver,
+			data: data.data,
 		});
 
 		// Emit the message to all connected clients
