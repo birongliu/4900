@@ -1,23 +1,35 @@
 'use client'
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { redirect, RedirectType, useParams } from "next/navigation";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { AddMessagePopup } from "@/app/ui/chat/AddTalk";
 
 
 export default function Chat() {
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user) {
+      redirect("/", RedirectType.replace);
+    }
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/chats/${user.id}`)
+  }, [user]);
+
   return redirect("/chat/1", RedirectType.replace);
 }
 
-
-export function SideBar({ friends, handleClick, active }: { active: string, handleClick: (id: string) => void, friends: { id: string, username: string, photo: string }[] }) {
+export function SideBar({ username, friends, handleClick, active }: { username: string, active: string, handleClick: (id: string) => void, friends: { id: string, username: string, photo: string }[] }) {
   const { id } = useParams()
   const router = useRouter();
   return (
     <div className={` w-full lg:w-1/4 ${active.length === 0 ? "block" : "hidden"} lg:block  rounded-xl`}>
       <div className="p-2 rounded-t-xl">
+        <div className="flex justify-between items-center">
         <h1 className="font-poppins text-3xl p-2 font-semibold">Chats</h1>
+        <AddMessagePopup username={username} />
+        </div>
         <input
           className="w-full h-10 block rounded-xl border-2 p-5 text-sm"
           placeholder="Find a conversation"

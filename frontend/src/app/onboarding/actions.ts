@@ -1,6 +1,6 @@
 "use server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { FormData, OnboardingResultOptions } from "../utils/interface";
+import { FormData } from "../utils/interface";
 
 export const completeOnboarding = async (formData: FormData) => {
   const { userId } = auth();
@@ -22,11 +22,14 @@ export const completeOnboarding = async (formData: FormData) => {
         onboardingAIOutput: result
       },
     });
+
   } catch (error) {
     console.error(error);
     return { message: "Error" };
   }
 };
+
+
 
 async function fetchAIOnboardingResult(
   formData: Omit<FormData, "Result" | "Introduction">

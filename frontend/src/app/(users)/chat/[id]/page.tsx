@@ -100,7 +100,7 @@ export default function ChatMessage() {
   const { user } = useUser();
   const ws = new WebSocket("ws://localhost:3001");
   const [active, setActive] = useState<string>(Array.isArray(id) ? "" : id);
-  if (!user) return notFound();
+  if (!user || !user.username) return notFound();
 
   const {
     recipent,
@@ -113,6 +113,7 @@ export default function ChatMessage() {
   return (
     <div className="p-5 flex gap-5 h-full sticky top-2">
       <SideBar
+        username={user.username}
         handleClick={setActive}
         active={active}
         friends={data
