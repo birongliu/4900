@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createClerkClient } from '@clerk/backend'
-import { getUserByID, getUserByName, getFriends, addFriend, create } from "../database/models/userInfo.js"
+import { getUserById, getUserByName, getFriends, addFriend, create } from "../database/models/userInfo.js"
 
 const router = Router();
 
@@ -32,8 +32,8 @@ router.post('/addFriend', async (req, res) => {
             return res.status(422).json({ error: "You can't friend yourself." });
         }
 
-        const user = await getUserByID(userId); // This should work if User is defined correctly
-        const friend = await getUserByID(friendId);
+        const user = await getUserById(userId); // This should work if User is defined correctly
+        const friend = await getUserById(friendId);
 
         if (!user || !friend) {
             return res.status(404).json({ error: "User or friend not found." });

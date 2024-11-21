@@ -42,7 +42,7 @@ export default function Hero() {
     return;
   }
 
-  const recommendedPets = user.publicMetadata.onboardingAIOutput as AIOutput[];
+  const recommendedPets = (user.publicMetadata.onboardingAIOutput ?? []) as AIOutput[];
 
   const otherPets = result
     .filter((k) => recommendedPets.some((s) => s.name !== k.name))

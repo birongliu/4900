@@ -17,7 +17,7 @@ export async function createChatRoom(data) {
 
 export async function getAllChatRooms(userId) {
     const data = await chatRoom.findAll({
-        users: { $eq: userId }
+        users: { $contains: userId }
     })
     if (!data) return null
     return data;

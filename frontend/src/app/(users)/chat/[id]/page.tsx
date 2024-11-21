@@ -1,12 +1,14 @@
 "use client";
 import bradley from "../../../images/teams/bradley.jpeg";
 import birongliu from "../../../images/teams/birongliu.jpeg";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { SideBar } from "../page";
 import notFound from "@/app/not-found";
 import { useParams } from "next/navigation";
+import io from "socket.io-client"
 import Image from "next/image";
+import { clerkClient } from "@clerk/nextjs/server";
 
 interface Message {
   message: string;
@@ -27,6 +29,7 @@ interface Rooms {
 
 export default function ChatMessage() {
   const { id } = useParams();
+  const [message, setMessage] = useState('');
 
   const data = [
     {
@@ -46,70 +49,103 @@ export default function ChatMessage() {
     },
   ];
 
-  const rooms: Rooms[] = [
-    {
-      id: "1",
-      recipent: data,
-      messages: [
-        {
-          message: "Hello2",
-          sender: "John Doe",
-          type: "other",
-          image: bradley.src,
-        },
-        {
-          message: "Hi",
-          sender: "birongliu",
-          type: "me",
-          image: birongliu.src,
-        },
-        {
-          message: "Hello2",
-          sender: "John Doe",
-          type: "other",
-          image: bradley.src,
-        },
-        {
-          message: "Hi",
-          sender: "birongliu",
-          type: "me",
-          image: birongliu.src,
-        },
-      ],
-    },
-    {
-      id: "2",
-      recipent: data,
-      messages: [
-        {
-          message: "Hellow",
-          sender: "John Doe",
-          type: "other",
-          image: bradley.src,
-        },
-        {
-          message: "Hi",
-          sender: "birongliu",
-          type: "me",
-          image: birongliu.src,
-        },
-      ],
-    },
-  ];
+  // const rooms: Rooms[] = [
+  //   {
+  //     id: "1",
+  //     recipent: data,
+  //     messages: [
+  //       {
+  //         message: "Hello2",
+  //         sender: "John Doe",
+  //         type: "other",
+  //         image: bradley.src,
+  //       },
+  //       {
+  //         message: "Hi",
+  //         sender: "birongliu",
+  //         type: "me",
+  //         image: birongliu.src,
+  //       },
+  //       {
+  //         message: "Hello2",
+  //         sender: "John Doe",
+  //         type: "other",
+  //         image: bradley.src,
+  //       },
+  //       {
+  //         message: "Hi",
+  //         sender: "birongliu",
+  //         type: "me",
+  //         image: birongliu.src,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: "2",
+  //     recipent: data,
+  //     messages: [
+  //       {
+  //         message: "Hellow",
+  //         sender: "John Doe",
+  //         type: "other",
+  //         image: bradley.src,
+  //       },
+  //       {
+  //         message: "Hi",
+  //         sender: "birongliu",
+  //         type: "me",
+  //         image: birongliu.src,
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const { user } = useUser();
-  const ws = new WebSocket("ws://localhost:3001");
-  const [active, setActive] = useState<string>(Array.isArray(id) ? "" : id);
-  if (!user || !user.username) return notFound();
-
-  const {
+  const [rooms] = useState<Rooms[]>([{
+    id: "2",
+    messages: [{ image: "", message: "", sender: "", type: "other" }],
+    recipent: []
+    }])
+    const {
     recipent,
-    messages,
+    messages: roomMessages,
     id: k,
   } = rooms.find((room) => room.id === id) ?? { recipent: [], messages: [] };
+  const ws = io("http://localhost:3001");
+  const [active, setActive] = useState<string>(Array.isArray(id) ? "" : id);
+  const [messages, setMessages] = useState<Message[]>(roomMessages)
   const other = recipent.find(
-    (recipent) => recipent.sender !== user.username
+    (recipent) => recipent.sender !== user?.username
   ) ?? { type: "", sender: "", image: "" };
+  useEffect(() => {
+    const o = async () => {
+      const  k = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${user?.id}`)
+      console.log(k)
+    }
+    o()
+  }, [user?.id])
+    if (!user || !user.username) return notFound();
+  const submitMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setMessages((prev) => [...prev, {
+      message,
+      sender: user.username as string,
+      image: user.imageUrl,
+      type: recipent ? "me" : "other",
+    }])
+  }
+        ws.on('room message', (data) => {
+      console.log("Received new message from server:", data);
+
+            // Prevent duplicate messages (based on messageId or other unique identifier)
+  });
+
+  ws.emit("room message", { roomId: '2',
+			senderId: user.id,
+			reciver: 'some one',
+			data: { message, sender: user.firstName, type:"me" , image: user.imageUrl } }, (req) => {
+    console.log(req)
+  })
   return (
     <div className="p-5 flex gap-5 h-full sticky top-2">
       <SideBar
@@ -181,7 +217,7 @@ export default function ChatMessage() {
               />
             </div>
           </div>
-          <div className="h-full mt-5 relative rounded-xl bg-light-blue flex-col p-5 flex">
+          <div className="h-full mt-5 relative overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -204,13 +240,16 @@ export default function ChatMessage() {
               </div>
             ))}
           </div>
-          <div className=" p-2 flex gap-2">
-            <textarea
+          <form onSubmit={(e) => submitMessage(e)} className=" p-2 flex gap-2">
+            <input
               role="dialog"
+              id="message"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
               placeholder="Type your message"
             />
-          </div>
+          </form>
         </div>
       ) : (
         <div
