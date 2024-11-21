@@ -208,7 +208,7 @@ export default function ChatMessage() {
             <textarea
               role="dialog"
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
-              placeholder="Type your message"
+              placeholder="Type your friend id"
             />
           </div>
         </div>
