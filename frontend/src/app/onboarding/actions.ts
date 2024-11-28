@@ -15,13 +15,20 @@ export const completeOnboarding = async (formData: FormData) => {
   console.log("here is the result", result)
   try {
     const user = clerkClient().users;
-    console.log(result)
     await user.updateUserMetadata(userId, {
       publicMetadata: {
         onboardingComplete: true,
         onboardingAIOutput: result
       },
     });
+    const x = await user.getUser(userId);
+    await createUserData({
+      userId: userId,
+      petpreference: result,
+      favoritePets: [],
+      friends: [],
+      userName: x.username
+    })
 
   } catch (error) {
     console.error(error);
@@ -30,6 +37,16 @@ export const completeOnboarding = async (formData: FormData) => {
 };
 
 
+async function createUserData(formData: { userId: string, petpreference: any, favoritePets: any, friends: any, userName: string | null }) {
+  await fetch(`${process.env.API_URL}/api/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      'Cache-Control': 'max-age=3600',
+    },
+    body: JSON.stringify(formData),
+  });
+}
 
 async function fetchAIOnboardingResult(
   formData: Omit<FormData, "Result" | "Introduction">

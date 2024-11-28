@@ -56,6 +56,7 @@ export default function Hero() {
         </button>
         <div className="sticky top-2 w-full shadow-md z-10">
           <Searchbar
+            title="Search for pets"
             filter={(search, item) =>
               item.breed.toLowerCase().trim().split("/").includes(search) ||
               item.name.toLowerCase() === search.toLowerCase()
