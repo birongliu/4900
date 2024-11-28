@@ -29,7 +29,7 @@ export default function Chat() {
   );
 }
 
-export function ChatRoom({
+function ChatRoom({
   room,
   context,
   socket
@@ -113,7 +113,6 @@ export function ChatRoom({
             return;
           }
           setActiveRoom(id);
-          console.log("id", id);
           router.replace(`/chat/${id}`);
           setActiveRoom(id)
           setToggleFriendButton(true);
@@ -193,7 +192,7 @@ export function ChatRoom({
               />
             </div>
           </div>
-          <div ref={messageRef} className="h-[75%] mt-5 relative overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
+          <div ref={messageRef} className="h-[75%] mt-5 overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -224,7 +223,6 @@ export function ChatRoom({
               value={message.message}
               onChange={(e) => {
                 if(error) setError("");
-                console.log("message", e.target.value);
                 setMessage({ id: message.id, message: e.target.value, sender: context.username, image: context.imageUrl })
               }}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"

@@ -44,7 +44,7 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
           `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${user.id}`,
           {
             method: "GET",
-            cache: "reload",
+            cache: "force-cache",
             headers: {
               "Content-Type": "application/json",
             },
@@ -54,7 +54,8 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
           `${process.env.NEXT_PUBLIC_API_URL}/api/users/${user.username}/friends`,
           {
             method: "GET",
-            cache: "reload",
+            cache: "force-cache",
+
             headers: {
               "Content-Type": "application/json",
             },
