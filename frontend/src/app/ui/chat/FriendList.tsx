@@ -9,9 +9,7 @@ import { redirect, useRouter } from "next/navigation";
 export default function FriendList({ friends, active, me, rooms }: { rooms: Room[], me: User, active: boolean, friends: User[] }) {
   const router = useRouter();
   const handleClick = (user: User) => {
-    console.log("clicked", user, me);
     const isValid = rooms.find((room) => room.recipients.some((r) => r.username === user.username));
-    console.log(isValid);
     if(isValid) return router.push(`/chat/${isValid.roomId}`);
     const createRoom = async () => {
       const fetchRoom = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/rooms`, {

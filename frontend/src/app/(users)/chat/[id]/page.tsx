@@ -1,7 +1,7 @@
 "use client";
 
 import { ContextUser, Room, UserContext } from "@/app/context/getUserContext";
-import { redirect, useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { SideBar } from "../page";
 import FriendList from "@/app/ui/chat/FriendList";
@@ -43,10 +43,10 @@ export function ChatRoom({
   const [messages, setMessages] = useState<Message[]>(room ? room.messages : []);
   const messageRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
-  const [toggleFriendButton, setToggleFriendButton] = useState(true);
+  const [toggleFriendButton, setToggleFriendButton] = useState(false);
   const other = room && room.recipients.find((r) => r.username !== context.username);
 
-  
+
   const handleMessages = (e: FormEvent) => {
     e.preventDefault();
     console.log("in handle messages")
@@ -71,10 +71,18 @@ export function ChatRoom({
     setMessage({ message: "", sender: "", image: "", id: "" });
   }
   useEffect(() => {
-    console.log("use effect");
     if (messageRef.current) {
       messageRef.current.scroll({ top: messageRef.current.scrollHeight, behavior: "smooth" });
     }
+    const initalize = () => {
+      if(!room) return;
+      const { roomId, messages } = room;
+      setActiveRoom(roomId ?? "");
+      setToggleFriendButton(true);
+      setMessages(messages);
+    }
+    initalize()
+
     socket.emit("join room", room && room.roomId);
     socket.on("room message", (message: Message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
@@ -85,17 +93,7 @@ export function ChatRoom({
     }
   }, [socket, room])
 
-  useEffect(() => {
-    const initalize = () => {
-      if(!room) return;
-      const { roomId, messages } = room;
-      setActiveRoom(roomId ?? "");
-      setToggleFriendButton(true);
-      setMessages(messages);
-    }
-    initalize()
-  }, [room, socket])
-
+  const router = useRouter()
   return (
     <div className="flex overflow-auto w-full h-full">
       <SideBar
@@ -109,21 +107,23 @@ export function ChatRoom({
         }}
         toggleFriendButton={toggleFriendButton}
         handleClick={(id) => {
-          if (activeRoom) {
+          if (activeRoom === id) {
             setActiveRoom("");
             setToggleFriendButton(true);
             return;
           }
-          setToggleFriendButton(false);
-          setActiveRoom(room?.roomId ?? "");
-          redirect(`/chat/${id}`);
+          setActiveRoom(id);
+          console.log("id", id);
+          router.replace(`/chat/${id}`);
+          setActiveRoom(id)
+          setToggleFriendButton(true);
         }}
         rooms={context.rooms
           .filter(
-            (value, index) =>
+            (value) =>
               value.recipients.filter((r) => r.id !== context.id).length > 0
           )
-          .map((value, index) => {
+          .map((value) => {
             let otherUser = value.recipients.find(
               (u) => u.username !== context.username
             );
@@ -233,7 +233,7 @@ export function ChatRoom({
           </form>
         </div>
       )}
-      {(
+      {toggleFriendButton && (
         <FriendList
           rooms={context.rooms}
           me={context}

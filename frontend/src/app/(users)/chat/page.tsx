@@ -1,16 +1,13 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { AddMessagePopup } from "@/app/ui/chat/AddTalk";
 import { useUser } from "@clerk/nextjs";
-import { UserContext } from "@/app/context/getUserContext";
 export default function Chat() {
   const { user } = useUser();
-  const router = useRouter();
-  const context = useContext(UserContext);
-  if(context.isLoaded && !context.rooms.length) redirect("/chat/newl");
-  if(!user) redirect("/login");
+  const [location, setLocation] = useState("");
+  if(!user) redirect("/");
   useEffect(() => {
     const resolve = async () => {
       const fetchRoom = await fetch(
@@ -24,15 +21,18 @@ export default function Chat() {
         }
       );
       if(!fetchRoom.ok) {
-        return;
+        return { error: "An error occured" };
       };
       const data = await fetchRoom.json();
-      if(!data.length) return router.push("/chat/new");
-      return router.push(`/chat/${data[0].roomId}`)
+      if(!data.length) {
+        setLocation("/chat/new");
+        return;
+      }
+      setLocation(`/chat/${data[0].roomId}`);
     }
     resolve()
-  }, [router, user, context.rooms]);
-
+  }, [user]);
+  if(location) return redirect(location);
 }
 
 export function SideBar({
@@ -88,7 +88,7 @@ export function SideBar({
                   <li
                     key={friend.id}
                     className={`flex w-full items-center gap-2 p-2 bg-light-gray ${
-                      active && friend.id === id && "bg-light-ivory"
+                      friend.roomId === id && "bg-light-ivory"
                     } ${
                       active === friend.id ? "bg-light-ivory" : ""
                     } rounded-xl hover:bg-light-ivory cursor-pointer`}

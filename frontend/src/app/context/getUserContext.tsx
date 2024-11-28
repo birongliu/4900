@@ -60,8 +60,8 @@ export const UserContextProvider: React.FC<UserContextProviderProps> = ({
             },
           }
         );
-
         const [room, friend] = await Promise.all([fetchRoom, fetchFriend]);
+        if(room.status !== 200 || friend.status !== 200) return setUserState({ isLoaded: true, id: user.id, username: user.username ?? "", imageUrl: user.imageUrl, friends: [], rooms: [] });
         const [rooms, friends] = await Promise.all([room.ok && room.status === 200 ? await room.json() : [], friend.ok && room.status === 200 ? await friend.json() : []]);
         setUserState({ isLoaded: true, friends: friends ?? [], rooms: rooms ?? [], id: user.id, username: user.username ?? "", imageUrl: user.imageUrl });
       }
