@@ -247,7 +247,7 @@ export default function ChatMessage() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
-              placeholder="Type your message"
+              placeholder="Type your friend id"
             />
           </form>
         </div>

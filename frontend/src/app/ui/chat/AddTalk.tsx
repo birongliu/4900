@@ -47,7 +47,7 @@ export function AddMessagePopup({ username }: { username: string }) {
                   id="message"
                   value={id}
                   onChange={(e) => setId(e.target.value)}
-                  placeholder="Type your message here."
+                  placeholder="Type your friend username."
                   className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:border-blue-500"
                   required
                 />
