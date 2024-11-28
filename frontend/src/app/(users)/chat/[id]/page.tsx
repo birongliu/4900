@@ -228,7 +228,7 @@ export function ChatRoom({
                 setMessage({ id: message.id, message: e.target.value, sender: context.username, image: context.imageUrl })
               }}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
-              placeholder="Type your message"
+              placeholder="Type your friend id"
             />
           </form>
         </div>
