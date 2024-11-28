@@ -2,6 +2,8 @@ import { Schema, model } from "mongoose";
 
 const userModel = new Schema({
     userId: String,
+    userName: String,
+    imageUrl: String,
     petPreference: Object,
     favoritePets: [String],
     friends: { type: [String], default: [] }
@@ -30,15 +32,18 @@ export async function getUserById(userId) {
     if (!user) return null
     return user;
 }
-export function getFriends(userId) {
-    const friends =  users.findOne({
+export async function getFriends(userId) {
+    const friends = await users.findOne({
         userId: userId,
-    }).projection({ friends})
-    return friends;
+    })
+    return friends.friends;
 }
 
-export function addFriend(user, friend) {
+export async function addFriend(user, friend) {
     user.friends.push(friend.userId)
+    friend.friends.push(user.userId)
+    await user.save()
+    await friend.save()
     
 }
 

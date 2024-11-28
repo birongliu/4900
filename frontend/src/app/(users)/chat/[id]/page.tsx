@@ -1,174 +1,150 @@
 "use client";
-import bradley from "../../../images/teams/bradley.jpeg";
-import birongliu from "../../../images/teams/birongliu.jpeg";
-import React, { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { SideBar } from "../page";
-import notFound from "@/app/not-found";
-import { useParams } from "next/navigation";
-import io from "socket.io-client"
-import Image from "next/image";
-import { clerkClient } from "@clerk/nextjs/server";
 
-interface Message {
+import { ContextUser, Room, UserContext } from "@/app/context/getUserContext";
+import { useRouter, useParams } from "next/navigation";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { SideBar } from "../page";
+import FriendList from "@/app/ui/chat/FriendList";
+import Image from "next/image";
+import { SocketContext } from "@/app/context/SocketContext";
+import { Socket } from "socket.io-client";
+import { v4 } from "uuid";
+export interface Message {
   message: string;
   sender: string;
-  type: "me" | "other";
   image: string;
+  id?: string;
 }
 
-interface Rooms {
-  id: string;
-  recipent: {
-    sender: string;
-    type: string;
-    image: string;
-  }[];
-  messages: Message[];
-}
-
-export default function ChatMessage() {
+export default function Chat() {
   const { id } = useParams();
-  const [message, setMessage] = useState('');
+  const context = useContext(UserContext);
+  const socket = useContext(SocketContext);
+  if(!socket || !context) return null;
+  const room = context.rooms.find((r) => r.roomId === id);
+  return room ? (
+    <ChatRoom socket={socket.socket} room={room} context={context} />
+  ) : (
+    <ChatRoom socket={socket.socket} room={undefined} context={context} />
+  );
+}
 
-  const data = [
-    {
-      sender: "Bradley",
-      type: "other",
-      image: bradley.src,
-    },
-    {
-      sender: "Shaun",
-      type: "other",
-      image: '',
-    },
-    {
-      sender: "birongliu",
-      type: "me",
-      image: birongliu.src,
-    },
-  ];
+export function ChatRoom({
+  room,
+  context,
+  socket
+}: {
+  room: Room | undefined;
+  context: ContextUser;
+  socket: Socket,
+}) {
+  const [activeRoom, setActiveRoom] = useState("");
+  const [message, setMessage] = useState<Message>({ message: "", sender: "",  image: "" });
+  const [messages, setMessages] = useState<Message[]>(room ? room.messages : []);
+  const messageRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState("");
+  const [toggleFriendButton, setToggleFriendButton] = useState(false);
+  const other = room && room.recipients.find((r) => r.username !== context.username);
 
-  // const rooms: Rooms[] = [
-  //   {
-  //     id: "1",
-  //     recipent: data,
-  //     messages: [
-  //       {
-  //         message: "Hello2",
-  //         sender: "John Doe",
-  //         type: "other",
-  //         image: bradley.src,
-  //       },
-  //       {
-  //         message: "Hi",
-  //         sender: "birongliu",
-  //         type: "me",
-  //         image: birongliu.src,
-  //       },
-  //       {
-  //         message: "Hello2",
-  //         sender: "John Doe",
-  //         type: "other",
-  //         image: bradley.src,
-  //       },
-  //       {
-  //         message: "Hi",
-  //         sender: "birongliu",
-  //         type: "me",
-  //         image: birongliu.src,
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "2",
-  //     recipent: data,
-  //     messages: [
-  //       {
-  //         message: "Hellow",
-  //         sender: "John Doe",
-  //         type: "other",
-  //         image: bradley.src,
-  //       },
-  //       {
-  //         message: "Hi",
-  //         sender: "birongliu",
-  //         type: "me",
-  //         image: birongliu.src,
-  //       },
-  //     ],
-  //   },
-  // ];
 
-  const { user } = useUser();
-  const [rooms] = useState<Rooms[]>([{
-    id: "2",
-    messages: [{ image: "", message: "", sender: "", type: "other" }],
-    recipent: []
-    }])
-    const {
-    recipent,
-    messages: roomMessages,
-    id: k,
-  } = rooms.find((room) => room.id === id) ?? { recipent: [], messages: [] };
-  const ws = io("http://localhost:3001");
-  const [active, setActive] = useState<string>(Array.isArray(id) ? "" : id);
-  const [messages, setMessages] = useState<Message[]>(roomMessages)
-  const other = recipent.find(
-    (recipent) => recipent.sender !== user?.username
-  ) ?? { type: "", sender: "", image: "" };
-  useEffect(() => {
-    const o = async () => {
-      const  k = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${user?.id}`)
-      console.log(k)
+  const handleMessages = (e: FormEvent) => {
+    e.preventDefault();
+    console.log("in handle messages")
+    if(message.message.trim() === "") {
+      setError("Message cannot be empty");
+      return;
     }
-    o()
-  }, [user?.id])
-    if (!user || !user.username) return notFound();
-  const submitMessage = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setMessages((prev) => [...prev, {
-      message,
-      sender: user.username as string,
-      image: user.imageUrl,
-      type: recipent ? "me" : "other",
-    }])
+    const constructMessage = {
+      sender: context.username,
+      message: message.message,
+      image: context.imageUrl,
+      id: v4(),
+    } as Message;
+    const constructMessageWithRoom = {
+      message: constructMessage,
+      roomId: room?.roomId,
+      sender: context,
+      reciver: other,
+    }
+    socket.emit("room message", constructMessageWithRoom)
+    setMessages((prevMessages) => [...prevMessages, constructMessage]);
+    setMessage({ message: "", sender: "", image: "", id: "" });
   }
-        ws.on('room message', (data) => {
-      console.log("Received new message from server:", data);
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scroll({ top: messageRef.current.scrollHeight, behavior: "smooth" });
+    }
+    const initalize = () => {
+      if(!room) return;
+      const { roomId, messages } = room;
+      setActiveRoom(roomId ?? "");
+      setToggleFriendButton(true);
+      setMessages(messages);
+    }
+    initalize()
 
-            // Prevent duplicate messages (based on messageId or other unique identifier)
-  });
+    socket.emit("join room", room && room.roomId);
+    socket.on("room message", (message: Message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
 
-  ws.emit("room message", { roomId: '2',
-			senderId: user.id,
-			reciver: 'some one',
-			data: { message, sender: user.firstName, type:"me" , image: user.imageUrl } }, (req) => {
-    console.log(req)
-  })
+    return () => {
+      socket.off("room message");
+    }
+  }, [socket, room])
+
+  const router = useRouter()
   return (
-    <div className="p-5 flex gap-5 h-full sticky top-2">
+    <div className="flex overflow-auto w-full h-full">
       <SideBar
-        username={user.username}
-        handleClick={setActive}
-        active={active}
-        friends={data
-          .filter((k) => k.sender !== user.username)
-          .map((recipent) => ({
-            id: k ?? "",
-            username: recipent.sender,
-            photo: recipent.image,
-          }))}
+        username={context.username}
+        active={activeRoom}
+        handleFriend={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        addFriend={function (id: string): void {
+          throw new Error("Function not implemented.");
+        }}
+        toggleFriendButton={toggleFriendButton}
+        handleClick={(id) => {
+          if (activeRoom === id) {
+            setActiveRoom("");
+            setToggleFriendButton(true);
+            return;
+          }
+          setActiveRoom(id);
+          console.log("id", id);
+          router.replace(`/chat/${id}`);
+          setActiveRoom(id)
+          setToggleFriendButton(true);
+        }}
+        rooms={context.rooms
+          .filter(
+            (value) =>
+              value.recipients.filter((r) => r.id !== context.id).length > 0
+          )
+          .map((value) => {
+            let otherUser = value.recipients.find(
+              (u) => u.username !== context.username
+            );
+            if (!otherUser) otherUser = { id: "", imageUrl: "", username: ""};
+            return {
+              roomId: value.roomId,
+              id: otherUser.id,
+              username: otherUser.username,
+              imageUrl: otherUser.imageUrl,
+            };
+          })}
       />
-      {active && k === id ? (
+      {activeRoom === room?.roomId && (
         <div
-          className={`${
-            active === "" ? "hidden" : "block"
+          className={` ${
+            activeRoom === "" ? "hidden" : "block"
           } w-full lg:w-[74%] h-full flex flex-col`}
         >
           <div className="p-2 flex items-center justify-start  gap-2">
             <button
-              onClick={() => setActive("")}
+              onClick={() => setActiveRoom("")}
               className="px-2 h-12 lg:hidden block"
             >
               <svg
@@ -193,15 +169,15 @@ export default function ChatMessage() {
             </button>
             <div className="flex lg:items-center flex-1 gap-2">
               <Image
-                src={other.image ?? ""}
-                alt={`${other.sender} image`}
+                src={other?.imageUrl ?? ""}
+                alt={`${""} image`}
                 width={200}
                 height={200}
                 className="w-10 h-10 bg-black hidden lg:block rounded-full"
               />
               <div>
                 <h1 className="font-poppins text-lg text-bold">
-                  {other.sender}
+                  {other?.username ?? ""}
                 </h1>
                 <h1 className=" font-poppins text-base text-bold">
                   {"Online"}
@@ -210,19 +186,19 @@ export default function ChatMessage() {
             </div>
             <div className="flex gap-2">
               <Image
-                src={"/chat/more.svg"}
+                src={other?.imageUrl ?? ""}
                 alt="more options"
                 height={24}
                 width={24}
               />
             </div>
           </div>
-          <div className="h-full mt-5 relative overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
-            {messages.map((message, index) => (
+          <div ref={messageRef} className="h-[75%] mt-5 relative overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
+            {messages.map((message) => (
               <div
-                key={index}
+                key={message.id}
                 className={`flex mt-2 w-full items-center ${
-                  message.type === "me" && "justify-end"
+                 message.sender === context.username ? "justify-end" : "justify-start"
                 } gap-2`}
               >
                 <Image
@@ -231,7 +207,7 @@ export default function ChatMessage() {
                   width={200}
                   height={200}
                   className={`w-12 h-12 bg-black  rounded-full ${
-                    message.type === "other" ? "" : "order-2"
+                   message.sender === context.username ? "order-1" : "order-none"
                   }`}
                 />
                 <p className="bg-light-rose p-2 rounded-xl">
@@ -240,27 +216,30 @@ export default function ChatMessage() {
               </div>
             ))}
           </div>
-          <form onSubmit={(e) => submitMessage(e)} className=" p-2 flex gap-2">
+          {error && <p className="text-red-500 flex justify-center">{error}</p>}
+          <form onSubmit={(e) => handleMessages(e)} className=" p-2 flex gap-2">
             <input
               role="dialog"
               id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={message.message}
+              onChange={(e) => {
+                if(error) setError("");
+                console.log("message", e.target.value);
+                setMessage({ id: message.id, message: e.target.value, sender: context.username, image: context.imageUrl })
+              }}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
               placeholder="Type your friend id"
             />
           </form>
         </div>
-      ) : (
-        <div
-          className={
-            "w-full lg:w-[73%] h-full flex-col  hidden lg:flex items-center justify-center font-bold text-2xl"
-          }
-        >
-          {id !== k
-            ? "Unable to select conversation"
-            : "Select one of the conversations"}{" "}
-        </div>
+      )}
+      {toggleFriendButton && (
+        <FriendList
+          rooms={context.rooms}
+          me={context}
+          active={toggleFriendButton && activeRoom === ""}
+          friends={context.friends}
+        />
       )}
     </div>
   );
