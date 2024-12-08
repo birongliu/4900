@@ -2,7 +2,7 @@
 import { ContextUser, Room, UserContext } from "@/app/context/getUserContext";
 import { useRouter, useParams, redirect } from "next/navigation";
 import { FormEvent, useContext, useEffect, useState } from "react";
-import { SideBar } from "../page";
+import SideBar from "@/app/ui/chat/SideBar";
 import FriendList from "@/app/ui/chat/FriendList";
 import Image from "next/image";
 import { SocketContext } from "@/app/context/SocketContext";
