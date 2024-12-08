@@ -70,10 +70,10 @@ io.on("connection", (socket) => {
       console.log("Received message data:", data);
       // Save message to the database
       const newMessage = await sendMessage({
+        message: data.message,
         roomId: data.roomId,
         sender: data.sender,
         reciver: data.reciver,
-        message: data.message,
       });
 
       // Emit the message to all connected clients
@@ -87,7 +87,6 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.error("Error saving or emitting message:", error);
       socket.emit("error", "Failed to send the message.");
-      callback({ status: "error", message: "Failed to send the message." });
     }
   });
 
