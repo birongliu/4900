@@ -1,6 +1,8 @@
 'use server';
 
-export async function getUserRoom(id: string) {
+import { Room } from "../context/getUserContext";
+
+export async function getUserRoom(id: string): Promise<Room[]> {
   const fetchRoom = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${id}`,
     {
@@ -12,6 +14,6 @@ export async function getUserRoom(id: string) {
       },
     }
   );
-  return fetchRoom;
+  return fetchRoom.json();
 }
 

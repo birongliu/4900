@@ -93,7 +93,11 @@ function ChatRoom({
     initalize();
 
     socket.emit("join room", room && room.roomId);
+    socket.on("disconnect", (r) => {
+      console.log("disconnected", r);
+    });
     socket.on("room message", (message: Message) => {
+      console.log("in room message", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
