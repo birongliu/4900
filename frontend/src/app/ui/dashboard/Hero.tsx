@@ -14,6 +14,7 @@ import { UserButton, useUser } from "@clerk/nextjs";
 import notFound from "@/app/not-found";
 import Link from "next/link";
 import Popup from "./Popup";
+import getPet from "@/app/actions/getPets-action";
 
 export default function Hero() {
   const [result, setResult] = React.useState<AIOutput[]>([]);
@@ -23,14 +24,8 @@ export default function Hero() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pets`)
-        .then((res) => res.json())
-        .then((data) => {
-          setResult(data.data);
-          const x = (data.data as AIOutput[]).map((k) =>
-            k.breed.trim().split("/")
-          );
-        });
+      const pet = await getPet()
+      setResult(pet)
     };
     fetchData();
   }, []);
@@ -84,7 +79,7 @@ export default function Hero() {
                   height={200}
                   alt={selectedPet.id}
                   className="w-full aspect-video rounded-3xl"
-                  src={selectedPet.pictureThumbnailUrl}
+                  src={`${selectedPet.pictureThumbnailUrl}`}
                 />
                 <div className="flex flex-col gap-2">
                   <span className="text-2xl font-bold text-[#3D0C3C]">

@@ -1,5 +1,6 @@
 "use client";
 
+import addFriendAction from "@/app/actions/addFriend-action";
 import { useState } from "react";
 
 export function AddMessagePopup({ username, addFriend }: { username: string, addFriend: (id: string) => void }) {
@@ -20,23 +21,13 @@ export function AddMessagePopup({ username, addFriend }: { username: string, add
       console.log("You can't add yourself as a friend.");
       return;
     }
-    const resolve = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/users/addFriend`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "max-age=3600",
-        },
-        body: JSON.stringify({ userId: username, friendId: id }),
-      }
-    );
-    if (resolve.status === 404) {
+    const resolve = await addFriendAction(username, id);
+    if (resolve === 404) {
       setError("User not found.");
       console.log("User not found.");
       return;
     }
-    if (resolve.status === 422) {
+    if (resolve === 422) {
       setError("User is already your friend.");
       console.log("User not found.");
       return;

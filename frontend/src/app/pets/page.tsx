@@ -16,6 +16,7 @@ import Image from "next/image";
 import { Searchbar } from "../ui/navigation/search/search";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import getPet from "../actions/getPets-action";
 export default function Hero() {
   const [result, setResult] = React.useState<AIOutput[]>([]);
   const itemsPerPage = 12;
@@ -23,19 +24,16 @@ export default function Hero() {
   const navigate = useRouter();
   const [filter, setFilter] = useState<string[]>([]);
 
-  const fetchData = () => {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pets`)
-      .then((res) => res.json())
-      .then((data) => {
-        const filterData = data.data.filter(
-          (item: AIOutput) => item.isAdoptionPending === false
-        );
-        const getBreed: string[] = filterData.map((item: AIOutput) =>
-          item.breed.trim().split("/")
-        );
-        setFilter([...new Set(getBreed.flat())]);
-        setResult(filterData);
-      });
+  const fetchData = async () => {
+    const pet = await getPet();
+    const filterData = pet.filter(
+      (item: AIOutput) => item.isAdoptionPending === false
+    );
+    const getBreed: string[] = filterData.map((item: AIOutput) =>
+      item.breed.trim().split("/")
+    );
+    setFilter([...new Set(getBreed.flat())]);
+    setResult(filterData);
   };
 
   useEffect(() => {
