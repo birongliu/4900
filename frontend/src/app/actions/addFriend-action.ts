@@ -2,7 +2,7 @@
 
 export default async function addFriendAction(userId: string, friendId: string) {
     const resolve = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/users/addFriend`,
+        `${process.env.API_URL}/api/users/addFriend`,
         {
           method: "POST",
           headers: {
