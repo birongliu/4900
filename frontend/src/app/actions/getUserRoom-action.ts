@@ -4,7 +4,7 @@ import { Room } from "../context/getUserContext";
 
 export async function getUserRoom(id: string): Promise<Room[]> {
   const fetchRoom = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/${id}`,
+    `${process.env.API_URL}/api/rooms/${id}`,
     {
       method: "GET",
       next: { tags: ["rooms"] },

@@ -115,8 +115,12 @@ function ChatRoom({
         handleFriend={function (): void {
           throw new Error("Function not implemented.");
         }}
-        addFriend={function (id: string): void {
-          throw new Error("Function not implemented.");
+        addFriend={(id) => {
+          console.log("in add friend");
+          socket.emit("add friend", {
+            id: context.id,
+            friendId: id,
+          });
         }}
         toggleFriendButton={toggleFriendButton}
         handleClick={(id) => {
