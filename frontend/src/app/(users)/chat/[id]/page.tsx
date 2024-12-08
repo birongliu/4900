@@ -93,7 +93,11 @@ function ChatRoom({
     initalize();
 
     socket.emit("join room", room && room.roomId);
+    socket.on("disconnect", (r) => {
+      console.log("disconnected", r);
+    });
     socket.on("room message", (message: Message) => {
+      console.log("in room message", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -111,8 +115,12 @@ function ChatRoom({
         handleFriend={function (): void {
           throw new Error("Function not implemented.");
         }}
-        addFriend={function (id: string): void {
-          throw new Error("Function not implemented.");
+        addFriend={(id) => {
+          console.log("in add friend");
+          socket.emit("add friend", {
+            id: context.id,
+            friendId: id,
+          });
         }}
         toggleFriendButton={toggleFriendButton}
         handleClick={(id) => {

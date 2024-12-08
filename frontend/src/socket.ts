@@ -2,4 +2,4 @@
 
 import { io } from "socket.io-client";
 
-export const socket = io("ws://localhost:3001", { withCredentials: true });;
+export const socket = io(`ws://${process.env.NEXT_PUBLIC_API_URL}`, { withCredentials: true });;
