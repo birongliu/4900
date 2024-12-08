@@ -1,8 +1,7 @@
 "use client";
-
 import { ContextUser, Room, UserContext } from "@/app/context/getUserContext";
-import { useRouter, useParams } from "next/navigation";
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { useRouter, useParams, redirect } from "next/navigation";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import { SideBar } from "../page";
 import FriendList from "@/app/ui/chat/FriendList";
 import Image from "next/image";
@@ -20,7 +19,7 @@ export default function Chat() {
   const { id } = useParams();
   const context = useContext(UserContext);
   const socket = useContext(SocketContext);
-  if(!socket || !context) return null;
+  if (!socket || !context) return null;
   const room = context.rooms.find((r) => r.roomId === id);
   return room ? (
     <ChatRoom socket={socket.socket} room={room} context={context} />
@@ -29,28 +28,33 @@ export default function Chat() {
   );
 }
 
-export function ChatRoom({
+function ChatRoom({
   room,
   context,
-  socket
+  socket,
 }: {
   room: Room | undefined;
   context: ContextUser;
-  socket: Socket,
+  socket: Socket;
 }) {
   const [activeRoom, setActiveRoom] = useState("");
-  const [message, setMessage] = useState<Message>({ message: "", sender: "",  image: "" });
-  const [messages, setMessages] = useState<Message[]>(room ? room.messages : []);
-  const messageRef = useRef<HTMLDivElement>(null);
+  const [message, setMessage] = useState<Message>({
+    message: "",
+    sender: "",
+    image: "",
+  });
+  const [messages, setMessages] = useState<Message[]>(
+    room ? room.messages : []
+  );
   const [error, setError] = useState("");
-  const [toggleFriendButton, setToggleFriendButton] = useState(false);
-  const other = room && room.recipients.find((r) => r.username !== context.username);
-
+  const [toggleFriendButton, setToggleFriendButton] = useState(true);
+  const other =
+    room && room.recipients.find((r) => r.username !== context.username);
 
   const handleMessages = (e: FormEvent) => {
     e.preventDefault();
-    console.log("in handle messages")
-    if(message.message.trim() === "") {
+    console.log("in handle messages");
+    if (message.message.trim() === "") {
       setError("Message cannot be empty");
       return;
     }
@@ -63,25 +67,30 @@ export function ChatRoom({
     const constructMessageWithRoom = {
       message: constructMessage,
       roomId: room?.roomId,
-      sender: context,
+      sender: {
+        id: context.id,
+        username: context.username,
+        imageUrl: context.imageUrl,
+      },
       reciver: other,
-    }
-    socket.emit("room message", constructMessageWithRoom)
+    };
+    socket.emit("room message", constructMessageWithRoom);
     setMessages((prevMessages) => [...prevMessages, constructMessage]);
     setMessage({ message: "", sender: "", image: "", id: "" });
+  };
+  const scrollToBottom = (messageRef: HTMLDivElement | null) => {
+    if(messageRef) messageRef.scroll({ top: messageRef.scrollHeight, behavior: "smooth" });
   }
+  
   useEffect(() => {
-    if (messageRef.current) {
-      messageRef.current.scroll({ top: messageRef.current.scrollHeight, behavior: "smooth" });
-    }
     const initalize = () => {
-      if(!room) return;
+      if (!room) return;
       const { roomId, messages } = room;
       setActiveRoom(roomId ?? "");
       setToggleFriendButton(true);
       setMessages(messages);
-    }
-    initalize()
+    };
+    initalize();
 
     socket.emit("join room", room && room.roomId);
     socket.on("room message", (message: Message) => {
@@ -90,10 +99,10 @@ export function ChatRoom({
 
     return () => {
       socket.off("room message");
-    }
-  }, [socket, room])
+    };
+  }, [socket, room]);
 
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div className="flex overflow-auto w-full h-full">
       <SideBar
@@ -113,10 +122,8 @@ export function ChatRoom({
             return;
           }
           setActiveRoom(id);
-          console.log("id", id);
-          router.replace(`/chat/${id}`);
-          setActiveRoom(id)
           setToggleFriendButton(true);
+          router.push(`/chat/${id}`, { scroll: false });
         }}
         rooms={context.rooms
           .filter(
@@ -127,7 +134,7 @@ export function ChatRoom({
             let otherUser = value.recipients.find(
               (u) => u.username !== context.username
             );
-            if (!otherUser) otherUser = { id: "", imageUrl: "", username: ""};
+            if (!otherUser) otherUser = { id: "", imageUrl: "", username: "" };
             return {
               roomId: value.roomId,
               id: otherUser.id,
@@ -138,7 +145,7 @@ export function ChatRoom({
       />
       {activeRoom === room?.roomId && (
         <div
-          className={` ${
+          className={`${
             activeRoom === "" ? "hidden" : "block"
           } w-full lg:w-[74%] h-full flex flex-col`}
         >
@@ -193,12 +200,17 @@ export function ChatRoom({
               />
             </div>
           </div>
-          <div ref={messageRef} className="h-[75%] mt-5 relative overflow-auto rounded-xl bg-light-blue flex-col p-5 flex">
+          <div
+            ref={scrollToBottom}
+            className="h-[75%] mt-5 overflow-auto rounded-xl bg-light-blue flex-col p-5 flex"
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex mt-2 w-full items-center ${
-                 message.sender === context.username ? "justify-end" : "justify-start"
+                  message.sender === context.username
+                    ? "justify-end"
+                    : "justify-start"
                 } gap-2`}
               >
                 <Image
@@ -207,7 +219,9 @@ export function ChatRoom({
                   width={200}
                   height={200}
                   className={`w-12 h-12 bg-black  rounded-full ${
-                   message.sender === context.username ? "order-1" : "order-none"
+                    message.sender === context.username
+                      ? "order-1"
+                      : "order-none"
                   }`}
                 />
                 <p className="bg-light-rose p-2 rounded-xl">
@@ -223,12 +237,16 @@ export function ChatRoom({
               id="message"
               value={message.message}
               onChange={(e) => {
-                if(error) setError("");
-                console.log("message", e.target.value);
-                setMessage({ id: message.id, message: e.target.value, sender: context.username, image: context.imageUrl })
+                if (error) setError("");
+                setMessage({
+                  id: message.id,
+                  message: e.target.value,
+                  sender: context.username,
+                  image: context.imageUrl,
+                });
               }}
               className="w-full h-12 resize-none p-2 rounded-xl border-2 outline-none focus:ring-2 focus:ring-light-rose"
-              placeholder="Type your friend id"
+              placeholder={`Message ${other?.username}`}
             />
           </form>
         </div>

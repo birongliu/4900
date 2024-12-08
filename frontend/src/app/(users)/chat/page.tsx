@@ -103,6 +103,7 @@ export function SideBar({
                     <h1 className="font-poppins text-xl text-bold">
                       {friend.username ?? ""}
                     </h1>
+                    
                   </li>
                 </button>
               </div>

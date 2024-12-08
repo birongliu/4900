@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const chatRoomModel = new Schema({
   roomId: String,
-  recipients: [String],
+  recipients: [Object],
   messages: [Object],
   createdAt: { type: Date, default: Date.now() },
 });
@@ -36,7 +36,7 @@ export async function sendMessage(ctx) {
       message: [],
       recipients: [reciver, sender],
     });
-    if (message) chat.messages.push({ message, sender });
+    if (message) chat.messages.push(message);
     await chat.save();
     return chat;
   } 
