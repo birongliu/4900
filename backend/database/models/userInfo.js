@@ -5,7 +5,7 @@ const userModel = new Schema({
     userName: String,
     imageUrl: String,
     petPreference: Object,
-    favoritePets: [String],
+    favorites: { type: [String], default: [] },
     friends: { type: [String], default: [] }
 });
 
@@ -46,6 +46,29 @@ export async function addFriend(user, friend) {
     await friend.save()
     
 }
+
+export async function addPetToFavorites(userId, petId) {
+    const user = await users.findOne({ userId });
+    if (!user) throw new Error("User not found");
+
+    if (user.favorites.includes(petId)) {
+        throw new Error("Pet is already in favorites");
+    }
+
+    user.favorites.push(petId);
+    await user.save();
+    return user.favorites; // Return updated favorites
+}
+
+export async function removePetFromFavorites(userId, petId) {
+    const user = await users.findOne({ userId });
+    if (!user) throw new Error("User not found");
+
+    user.favorites = user.favorites.filter((id) => id !== petId);
+    await user.save();
+    return user.favorites; // Return updated favorites
+}
+
 
 // export async function addPetToUser(userID, petID) {
 //     const user = await getUserByID(userID);
