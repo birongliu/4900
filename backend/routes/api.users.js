@@ -6,7 +6,9 @@ import {
   addPetToFavorites,
   removePetFromFavorites,
   create,
+  getUserById,
 } from "../database/models/userInfo.js";
+import { get } from "../database/models/petModel.js";
 import { createClerkClient } from "@clerk/backend";
 const router = Router();
 
@@ -115,18 +117,28 @@ router.post("/removePetFromFavorites", async (req, res) => {
 });
 
 router.get("/getFavorites/:userId", async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const user = await getUserById(userId);
+  try {
+    const { userId } = req.params;
+    const user = await getUserById(userId);
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        res.status(200).json({ favorites: user.favorites });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
+
+    const favorites = user.favorites;//array of pet ids
+    const pets = [];
+
+    for (let i = 0; i < favorites.length; i++) {
+      const pet = await get(favorites[i]);
+      if (pet) {
+        pets.push(pet);
+      }
+    }
+
+    res.status(200).json({ pets });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 
