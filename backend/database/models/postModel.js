@@ -2,17 +2,16 @@ import { Schema, model } from "mongoose";
 
 const postModel = new Schema(
   {
-    postID: String,
-    userID: { type: String, ref: "users" },
-    postTitle: String,
-    image_id: String,
+    id: String,
+    createdBy: { type: String, ref: "users" },
+    title: String,
     content: String,
-    likes: {
-      type: [String], // array of user ids
-      default: [],
-    },
+    upvote: Number,
     comments: {
-      type: [String],
+      type: [{
+        userID: { type: String, ref: "users" },
+        content: String,
+      }],
       default: [],
     },
   },
@@ -32,7 +31,7 @@ export async function findAll() {
 
 export async function findById(id) {
   const data = await post.findOne({
-    postID: { $eq: id },
+    id: { $eq: id },
   });
   if (!data) return null;
   return data;
@@ -40,16 +39,16 @@ export async function findById(id) {
 
 export async function getPostbyTitle(postTitle) {
   const data = await post.findOne({
-    postTitle: { $eq: postTitle },
+    title: { $eq: postTitle },
   });
   if (!data) return null;
   return data;
 }
 
 export async function update(id, data) {
-  return await post.updateOne({ postID: id }, data);
+  return await post.updateOne({ id: id }, data);
 }
 
 export async function findByIdAndDelete(id) {
-  return await post.deleteOne({ postID: id });
+  return await post.deleteOne({ id: id });
 }
