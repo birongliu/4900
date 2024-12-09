@@ -42,7 +42,6 @@ async function createUserData(formData: { userId: string, petpreference: any, fa
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      'Cache-Control': 'max-age=3600',
     },
     body: JSON.stringify(formData),
   });
@@ -58,7 +57,6 @@ async function fetchAIOnboardingResult(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'Cache-Control': 'max-age=3600',
       },
       body: JSON.stringify({ message: JSON.stringify(formData) }),
     }

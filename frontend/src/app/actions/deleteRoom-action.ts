@@ -7,7 +7,6 @@ export default async function deleteRoomAction(id: string) {
     const url = `${process.env.API_URL}/api/rooms/${id}`
     const response = await fetch(url, {
         method: "DELETE",
-        next: { tags: ["delete-rooms"] },
         headers: {
             "Content-Type": "application/json"
         }

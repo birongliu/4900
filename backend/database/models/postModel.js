@@ -2,18 +2,12 @@ import { Schema, model } from "mongoose";
 
 const postModel = new Schema(
   {
-    id: String,
     createdBy: { type: String, ref: "users" },
-    title: String,
-    content: String,
-    upvote: Number,
-    comments: {
-      type: [{
-        userID: { type: String, ref: "users" },
-        content: String,
-      }],
-      default: [],
-    },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    upvote: { type: Number, default: 0 },
+    comments: [{ userId: String, comment: String }],
+    imageUrl: { type: String, default: "" },
   },
   { timestamps: true }
 );
@@ -31,7 +25,7 @@ export async function findAll() {
 
 export async function findById(id) {
   const data = await post.findOne({
-    id: { $eq: id },
+    _id: { $eq: id },
   });
   if (!data) return null;
   return data;
@@ -46,9 +40,9 @@ export async function getPostbyTitle(postTitle) {
 }
 
 export async function update(id, data) {
-  return await post.updateOne({ id: id }, data);
+  return await post.updateOne({ _id: id }, data);
 }
 
 export async function findByIdAndDelete(id) {
-  return await post.deleteOne({ id: id });
+  return await post.deleteOne({ _id: id });
 }

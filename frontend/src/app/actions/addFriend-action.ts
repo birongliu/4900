@@ -7,7 +7,6 @@ export default async function addFriendAction(userId: string, friendId: string) 
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Cache-Control": "max-age=3600",
           },
           body: JSON.stringify({ userId, friendId }),
         }
