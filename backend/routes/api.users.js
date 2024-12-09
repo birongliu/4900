@@ -3,6 +3,8 @@ import {
   getUserByName,
   getFriends,
   addFriend,
+  addPetToFavorites,
+  removePetFromFavorites,
   create,
 } from "../database/models/userInfo.js";
 import { createClerkClient } from "@clerk/backend";
@@ -81,5 +83,51 @@ router.post("/addFriend", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+router.post("/addFavorite", async (req, res) => {
+    try {
+        const { userId, petId } = req.body;
+
+        if (!userId || !petId) {
+            return res.status(400).json({ error: "Missing userId or petId" });
+        }
+
+        const updatedFavorites = await addPetToFavorites(userId, petId);
+        res.status(200).json({ message: "Pet added to favorites", favorites: updatedFavorites });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.post("/removePetFromFavorites", async (req, res) => {
+    try {
+        const { userId, petId } = req.body;
+
+        if (!userId || !petId) {
+            return res.status(400).json({ error: "Missing userId or petId" });
+        }
+
+        const updatedFavorites = await removePetFromFavorites(userId, petId);
+        res.status(200).json({ message: "Pet removed from favorites", favorites: updatedFavorites });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+router.get("/getFavorites/:userId", async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await getUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
 
 export default router;
