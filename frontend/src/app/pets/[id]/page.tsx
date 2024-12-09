@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { FaHeart } from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
 
 const pet = {
   id: 1,
@@ -47,6 +49,22 @@ export default function Page() {
     };
     resolve();
   }, [id]);
+  const { user } = useUser();
+
+  const handleFavorite = async () => {
+    setIsFavorite(!isFavorite);
+    if (!user) return;
+    const response = await fetch('http://localhost:3001/api/users/addFavorite', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: user.id, petId: id }),
+    })
+    const data = await response.json();
+    console.log(data)
+  }
+  
 
   return (
     <div className="container lg:mx-10 px-4 py-8">
@@ -69,11 +87,9 @@ export default function Page() {
                 />
                 <button
                   className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm hover:bg-white/90 rounded-full"
-                  onClick={() => setIsFavorite(!isFavorite)}
+                  onClick={handleFavorite}
                 >
-                  {/* <Heart
-                   className={`h-5 w-5 ${isFavorite ? "fill-current text-red-500" : "text-gray-600"}`}
-                 /> */}
+                  <FaHeart className={`h-5 w-5 ${isFavorite ? "fill-current text-red-500" : "text-gray-600"}`}/>
                   <span className="sr-only">Add to favorites</span>
                 </button>
               </div>
