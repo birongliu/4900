@@ -8,7 +8,6 @@ export async function getUserRoom(id: string): Promise<Room[]> {
     {
       method: "GET",
       next: { tags: ["rooms"] },
-      cache: "force-cache",
       headers: {
         "Content-Type": "application/json",
       },

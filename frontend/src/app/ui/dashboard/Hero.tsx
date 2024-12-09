@@ -60,7 +60,6 @@ export default function Hero() {
             Welcome back, {user.firstName}!
           </p>
         </div>
-        <UserButton />
         <div className="space-y-4">
           <div className="flex justify-between items-baseline">
             <div>

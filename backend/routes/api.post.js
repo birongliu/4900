@@ -21,6 +21,16 @@ router.get('/', async (req, res) => {
     }
 })
 
+router.get("/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        const post = await findById(id)
+        res.status(200).json(post)
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+})
+
 router.get('/:title', async (req, res) => {
     try {
         const title = req.params.title
@@ -79,14 +89,18 @@ router.put('/:id/likePost', async (req, res) => {
 
 router.put('/:id/commentPost', async (req, res) => {
     try {
-        const  id  = req.params
+        const  id  = req.params.id
         const value = req.body
+        console.log("id", id)
+        console.log("value", value)
 
-        const post = await findById(id)
+        let post = await findById(id)
+        if(!post) return res.status(404).json({ message: 'Post not found' });
+        console.log(value)
         post.comments.push(value)
-        const updatedPost = await update(id, post)
-
-        res.json(updatedPost);
+        console.log(post)
+        post = await update(id, post)
+        res.json(post);
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
