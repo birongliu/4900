@@ -20,7 +20,7 @@ export async function findAll() {
 } 
 export async function getUserByName(userName) {
     const user = await users.findOne({
-        userName,
+        userName: { $eq: userName },
     })
     if (!user) return null
     return user;
