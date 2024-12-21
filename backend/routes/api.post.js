@@ -41,10 +41,28 @@ router.get('/:title', async (req, res) => {
     }
 })
 
+import Joi from 'joi';
+
+const postSchema = Joi.object({
+    createdBy: Joi.string().optional(),
+    title: Joi.string().required(),
+    content: Joi.string().required(),
+    upvote: Joi.number().optional(),
+    comments: Joi.array().items(Joi.object({
+        userId: Joi.string().required(),
+        comment: Joi.string().required()
+    })).optional(),
+    imageUrl: Joi.string().optional()
+});
+
 router.put('/:id', async (req, res) => {
     try {
         const id  = req.params.id
-        const updatedPost = await update(id, req.body)
+        const { error, value } = postSchema.validate(req.body);
+        if (error) {
+            return res.status(400).send({ message: error.details[0].message });
+        }
+        const updatedPost = await update(id, value)
         res.json(updatedPost)
     } catch (error) {
         res.status(500).send({ message: error.message });
