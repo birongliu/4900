@@ -61,7 +61,7 @@ export async function addPetToFavorites(userId, petId) {
 }
 
 export async function removePetFromFavorites(userId, petId) {
-    const user = await users.findOne({ userId });
+    const user = await users.findOne({ userId: { $eq: userId } });
     if (!user) throw new Error("User not found");
 
     user.favorites = user.favorites.filter((id) => id !== petId);
